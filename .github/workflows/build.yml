@@ -6,7 +6,14 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write # needed to update the "latest" release
+  contents: write # update the "latest" release
+  pages: write # deploy to GitHub Pages
+  id-token: write # authenticate the Pages deployment
+
+# Allow only one concurrent Pages deployment.
+concurrency:
+  group: pages
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -19,13 +26,11 @@ jobs:
       - uses: typst-community/setup-typst@v4
 
       - name: Compile thesis
-        run: typst compile thesis.typ thesis.pdf
-
-      # Ephemeral artifact — handy for inspecting a build without publishing.
-      - uses: actions/upload-artifact@v4
-        with:
-          name: thesis-pdf
-          path: thesis.pdf
+        run: |
+          mkdir -p public
+          typst compile thesis.typ public/thesis.pdf
+          # Redirect the site root to the PDF so both URLs open it inline.
+          printf '<!doctype html><meta http-equiv="refresh" content="0; url=thesis.pdf">' > public/index.html
 
       # Stable, public download link that always points at the newest build.
       - name: Publish to the "latest" release
@@ -33,4 +38,20 @@ jobs:
         with:
           tag_name: latest
           name: Latest build
-          files: thesis.pdf
+          files: public/thesis.pdf
+
+      # Package the PDF for a GitHub Pages deployment (inline viewing).
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
