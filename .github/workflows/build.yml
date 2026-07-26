@@ -1,0 +1,36 @@
+name: Build thesis
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write # needed to update the "latest" release
+
+jobs:
+  build:
+    # macOS runner so the Helvetica Neue system font is available and the
+    # output matches a local build exactly.
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: typst-community/setup-typst@v4
+
+      - name: Compile thesis
+        run: typst compile thesis.typ thesis.pdf
+
+      # Ephemeral artifact — handy for inspecting a build without publishing.
+      - uses: actions/upload-artifact@v4
+        with:
+          name: thesis-pdf
+          path: thesis.pdf
+
+      # Stable, public download link that always points at the newest build.
+      - name: Publish to the "latest" release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: Latest build
+          files: thesis.pdf
