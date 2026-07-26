@@ -7,10 +7,10 @@
   place: "Munich",
   date: none,
 ) = {
-  pagebreak(weak: true)
-
-  text(size: 17pt)[Statement of Independent Work]
-  v(1cm)
+  // Unnumbered, kept out of the table of contents. The template's level-1
+  // show rule starts it on a fresh page.
+  heading(level: 1, numbering: none, outlined: false)[Statement of Independent Work]
+  v(0.5cm)
 
   par(justify: true)[
     I hereby declare that this thesis is my own work and that no other sources
