@@ -63,7 +63,7 @@
 }
 
 // ---------------------------------------------------------------------------
-// Title page (unchanged)
+// Title page
 // ---------------------------------------------------------------------------
 #let title-page(
   title: none,
@@ -82,39 +82,52 @@
 ) = {
   set page(margin: (top: 3cm, bottom: 2.5cm, left: 3cm, right: 3cm))
 
-  // Logo top-right, per TUM corporate design (falls back to a text mark).
-  // `logo` is passed as ready-made image content so its path resolves
-  // relative to the main document rather than this template file.
-  set align(right)
-  if logo != none {
-    logo
-  } else {
-    text(size: 20pt, weight: "bold", fill: tum-blue)[TUM]
+  // University identification on the left (specific -> general, tight spacing),
+  // logo on the right scaled to exactly the height of those three lines.
+  // `logo` is ready-made image content so its path resolves relative to the
+  // main document rather than this template file.
+  context {
+    let ident = {
+      set text(size: 12pt)
+      set par(leading: 0.45em)
+      if chair != none {
+        chair
+        linebreak()
+      }
+      [TUM #department]
+      linebreak()
+      [Technical University of Munich]
+    }
+    let mark = if logo != none {
+      logo
+    } else {
+      text(size: 20pt, weight: "bold", fill: tum-blue)[TUM]
+    }
+    let target = measure(ident).height
+    let mark-height = measure(mark).height
+    let sized-mark = if mark-height > 0pt {
+      box(scale(mark, (target / mark-height) * 100%, reflow: true))
+    } else {
+      mark
+    }
+    grid(
+      columns: (1fr, auto),
+      align: (left + top, right + top),
+      ident,
+      sized-mark,
+    )
   }
 
   set align(center)
-  v(0.5cm)
-  text(size: 12pt)[Technical University of Munich]
-  linebreak()
-  text(size: 12pt)[#department]
-  if chair != none {
-    linebreak()
-    text(size: 11pt)[#chair]
-  }
-
-  v(3cm)
+  v(4.5cm)
 
   text(size: 13pt, weight: "medium")[#thesis-type]
-  v(0.4cm)
-  line(length: 60%, stroke: 0.5pt + tum-blue)
-  v(0.6cm)
+  v(0.5cm)
   text(size: 22pt, weight: "bold")[#title]
   if subtitle != none {
     v(0.3cm)
     text(size: 15pt)[#subtitle]
   }
-  v(0.6cm)
-  line(length: 60%, stroke: 0.5pt + tum-blue)
 
   v(1fr)
 
@@ -123,20 +136,19 @@
   let field(label, value) = if value != none {
     grid(
       columns: (4cm, 1fr),
+      column-gutter: 1cm,
       row-gutter: 0.6em,
       text(weight: "medium")[#label], [#value],
     )
   }
 
-  pad(left: 1.5cm, right: 1.5cm)[
-    #field("Author", author)
-    #field("Matriculation number", matriculation)
-    #field("Degree", degree)
-    #field("Study program", program)
-    #field("Supervisor", supervisor)
-    #field("Advisor", advisor)
-    #field("Submitted on", submission-date)
-  ]
+  field("Author", author)
+  field("Matriculation number", matriculation)
+  field("Degree", degree)
+  field("Study program", program)
+  field("Supervisor", supervisor)
+  field("Advisor", advisor)
+  field("Submitted on", submission-date)
 
   v(2cm)
 }

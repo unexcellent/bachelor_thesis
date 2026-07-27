@@ -10,19 +10,18 @@
 #import "lib/declaration.typ": declaration
 
 #show: thesis.with(
-  title: "Considerations for Using COTS Parts in CubeSats",
-  subtitle: "An Overview of Satellite Systems and their Applications",
+  title: "A Modular Software Architecture for SSTV Image Transmission on an ESP32 Microcontroller",
   thesis-type: "Bachelor's Thesis",
-  degree: "Bachelor of Science (B.Sc.)",
+  degree: "Bachelor of Science",
   program: "Aerospace",
   department: "School of Engineering and Design",
-  chair: none, // e.g. "Chair of Astronautics"
+  chair: "Chair of Spacecraft Systems",
   author: "Tobias Klockau",
   matriculation: "03781731",
-  supervisor: none, // e.g. "Prof. Dr. ..."
-  advisor: "Golkar",
-  submission-date: "16 February 2024",
-  logo: image("figures/tum-logo.svg", width: 3.5cm),
+  supervisor: "Alessandro Golkar",
+  advisor: "Jaspar Sindermann",
+  submission-date: "October 1st 2026",
+  logo: image("figures/tum-logo.svg", width: 4.5cm),
   abstract: include "abstract.typ",
   kurzfassung: include "kurzfassung.typ",
   acknowledgement: include "acknowledgement.typ",
