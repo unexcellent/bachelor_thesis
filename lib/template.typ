@@ -40,7 +40,9 @@
     // The last top-level heading on or before the current page, so a chapter's
     // opening page shows its own title rather than the previous chapter's.
     let cp = here().page()
-    let hs = query(heading.where(level: 1)).filter(h => h.location().page() <= cp)
+    let hs = query(heading.where(level: 1)).filter(h => (
+      h.location().page() <= cp
+    ))
     if hs.len() > 0 {
       let h = hs.last()
       let counts = counter(heading).at(h.location())
@@ -113,8 +115,7 @@
     grid(
       columns: (1fr, auto),
       align: (left + top, right + top),
-      ident,
-      sized-mark,
+      ident, sized-mark,
     )
   }
 
