@@ -35,6 +35,12 @@ The secondary payload of MOVE-IIIa is fundamentally a service offered to the ama
 The fundamental output of this thesis is a firmware which deeply interacts with the underlying hardware. Although the hardware design is out of scope for this thesis, the resulting architecture still needs to be described to explain the design decisions.
 
 
+== Use-Case Analysis
+
+#figure(
+  image("../generated/use-case.svg", width: 80%),
+)
+
 == Requirements
 
 - updatetable within a single overpass
