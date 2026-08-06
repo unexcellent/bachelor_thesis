@@ -25,8 +25,12 @@ jobs:
 
       - uses: typst-community/setup-typst@v4
 
+      - name: Install PlantUML
+        run: brew install plantuml
+
       - name: Compile thesis
         run: |
+          ./generate_uml.sh
           mkdir -p public
           typst compile thesis.typ public/thesis.pdf
           # Redirect the site root to the PDF so both URLs open it inline.
