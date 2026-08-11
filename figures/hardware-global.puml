@@ -1,0 +1,34 @@
+@startuml
+mainframe ibd [block] Satellite [global architecture]
+left to right direction
+skinparam componentStyle rectangle
+skinparam nodesep 45
+skinparam ranksep 50
+skinparam defaultFontName Helvetica Neue
+skinparam defaultFontSize 20
+
+component ": EPS" <<block>> as eps {
+  portout "pwr" as eps_pwr
+}
+component ": PayloadBoard" <<block>> as pb {
+  portin  "pwr_in"   as pb_pwrin
+  portout "rf"      as pb_rf
+  portout "pwr_out"  as pb_pwrout
+  portout "uart"     as pb_uart
+  portout "audio" as pb_audio
+}
+component ": SstvSystem" <<block>> as sstv {
+  portin "pwr"    as sstv_pwrin
+  portin "uart"     as sstv_uart
+  portin "audio" as sstv_audio
+}
+component ": VhfAntenna" <<block>> as ant {
+  portin "rf" as ant_rf
+}
+
+eps_pwr   -down->  pb_pwrin   : «item» power
+pb_rf     -down->  ant_rf     : «item» rf_signal
+pb_pwrout -down->  sstv_pwrin : «item» power
+pb_uart   <-down->   sstv_uart  : «item» messages
+pb_audio  <-down-  sstv_audio : «item» audio_samples
+@enduml

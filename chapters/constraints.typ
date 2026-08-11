@@ -6,6 +6,12 @@ This chapter describes the process that preceded the software implementation in 
 
 The fundamental output of this thesis is a firmware which deeply interacts with the underlying hardware. Although the hardware design is out of scope for this thesis, the resulting architecture still needs to be described to explain the design decisions.
 
+#figure(
+  image("../generated/hardware-global.svg", width: 100%),
+  caption: [Global satellite arrchitecture],
+)
+
+
 == Mission Constraints
 
 #figure(
