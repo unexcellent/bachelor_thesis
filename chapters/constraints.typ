@@ -12,6 +12,7 @@ The fundamental output of this thesis is a firmware which deeply interacts with 
   image("../generated/use-case.svg", width: 80%),
 )
 
+
 == Community Input
 
 The secondary payload of MOVE-IIIa is fundamentally a service offered to the amateur satellite community. As such, its design should reflect the wishes of this stakeholder group. Therefore, it was decided that a post#footnote[link to the post: #link("https://www.reddit.com/r/amateursatellites/comments/1s6255m/i_am_building_the_sstv_payload_for_a_satellite/")] should be created in the r/amateursatellites subreddit describing the project and asking for feedback and inputs. The individual points concerning the software are listed in the following table.

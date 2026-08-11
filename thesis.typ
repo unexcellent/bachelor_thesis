@@ -33,9 +33,9 @@
 // --- Main body ---------------------------------------------------------------
 #include "chapters/introduction.typ"
 #include "chapters/theory.typ"
-#include "chapters/planning.typ"
+#include "chapters/constraints.typ"
 #include "chapters/implementation.typ"
-#include "chapters/validation.typ"
+#include "chapters/verification.typ"
 #include "chapters/conclusion.typ"
 
 // --- Back matter -------------------------------------------------------------
