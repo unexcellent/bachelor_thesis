@@ -22,4 +22,8 @@ for f in "${puml_files[@]}"; do
   plantuml -tsvg -o "$(pwd)/$out_dir" "$f"
 done
 
+# PlantUML draws ports of nested blocks inside the border instead of on it;
+# snap the borders onto the port squares (SysML notation).
+python3 scripts/fix_svg_ports.py "$out_dir"/*.svg
+
 echo "Done. SVGs written to $out_dir/"

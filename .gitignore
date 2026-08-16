@@ -4,3 +4,6 @@
 
 # macOS
 .DS_Store
+
+# directories that should stay local
+local/

@@ -8,9 +8,13 @@ The fundamental output of this thesis is a firmware which deeply interacts with 
 
 #figure(
   image("../generated/hardware-global.svg", width: 100%),
-  caption: [Global satellite arrchitecture],
+  caption: [Internal block diagram of the relevant satellite parts],
 )
 
+#figure(
+  image("../generated/hardware-sstv.svg", width: 100%),
+  caption: [Internal block diagram of the SstvSystem],
+)
 
 == Mission Constraints
 
