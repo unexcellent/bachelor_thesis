@@ -25,12 +25,16 @@ jobs:
 
       - uses: typst-community/setup-typst@v4
 
-      - name: Install PlantUML
-        run: brew install plantuml
+      # miro-export requires Node >= 22
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Download diagrams from Miro
+        run: ./fetch_miro.sh
 
       - name: Compile thesis
         run: |
-          ./generate_uml.sh
           mkdir -p public
           typst compile thesis.typ public/thesis.pdf
           # Redirect the site root to the PDF so both URLs open it inline.

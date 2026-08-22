@@ -1,0 +1,9 @@
+{
+  "name": "miro-fetch",
+  "private": true,
+  "type": "module",
+  "description": "Downloads the SysML diagrams from the Miro board as SVGs.",
+  "dependencies": {
+    "miro-export": "^1.1.1"
+  }
+}

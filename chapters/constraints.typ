@@ -1,51 +1,67 @@
+#import "@preview/acrostiche:0.7.0": acr
+
 = Constraints
 
 This chapter describes the process that preceded the software implementation in which the fundamental goal of the project and the needs of the different stakeholders were analysed.
 
-== Hardware Constraints
+== Hardware
 
 The fundamental output of this thesis is a firmware which deeply interacts with the underlying hardware. Although the hardware design is out of scope for this thesis, the resulting architecture still needs to be described to explain the design decisions.
 
-#figure(
-  image("../generated/hardware-global.svg", width: 100%),
-  caption: [Internal block diagram of the relevant satellite parts],
-)
+In the global satellite architecture, the SSTV system is only connected to the payload board which in turn handles transmission via the #acr("VHF") spectrum and communication with the ground station.
 
 #figure(
-  image("../generated/hardware-sstv.svg", width: 100%),
-  caption: [Internal block diagram of the SstvSystem],
+  image("../figures/imported/ibd_satellite.svg", width: 100%),
+  caption: [Internal block diagram of the satellite hardware (only the relevant parts)],
 )
+
+Within the SSTV system, the #acr("MCU") is the component running the software subject in this thesis and responsible for communicating with the payload board, fetching images from the cameras, processing them into #acr("SSTV") audio samples and sending those samples back to the payload board.
+
+#figure(
+  image("../figures/imported/ibd_sstv_system.svg", width: 100%),
+  caption: [Internal block diagram of the SSTV system hardware (only the relevant parts)],
+)
+
+A table mapping the GPIO pins of the #acr("MCU") can be found in table @tab-gpio.
+
+
+== Commands
 
 #figure(
   table(
     columns: 4,
     align: left,
-    [*GPIO*], [*Connected to*], [*Label*], [*Purpose*],
-    [9], [SC850SL], [SCL], [I2C bus clock],
-    [11], [SC850SL], [SDA], [camera register configuration],
-    [12], [MI1602], [SDA], [Register control],
-    [15], [MI1602], [SCL], [MIPI-CSI bus clock],
-    [20], [PCM5102A], [MCLK], [Master clock],
-    [21], [PCM5102A], [BCLK], [Bit clock],
-    [22], [PCM5102A], [DOUT], [Serial audio sample data],
-    [23], [PCM5102A], [WS], [Word select],
-    [28], [MI1602], [SCLK], [SPI2 clock for frame readout],
-    [29], [MI1602], [MISO], [SPI2 data input],
-    [30], [MI1602], [MOSI], [SPI2 data output],
-    [31], [MI1602], [SSN], [SPI2 slave select],
-    [37], [THVD1424], [RX], [Receives CSP messages from the payload board],
-    [38], [THVD1424], [TX], [Transmits CSP messages to the payload board],
-    [39], [THVD1424], [DE], [Enables sending via RS485. Permanently held high],
-    [54], [SC850SL], [XSHUTDN], [Shutdown / reset],
+    [*Name*], [*Port*], [*Payload*], [*Description*],
+    [Ping],
+    [1],
+    [Any],
+    [Standard #acr("CSP") ping which should trigger a response echoing the received payload],
+
+    [SSTV Trigger],
+    [11],
+    [Any payload starting with the string "SSTV"],
+    [Triggers the SSTV transmission],
+
+    [Update Announcement],
+    [10],
+    [Starting with a 0x00 byte followed by the data chunk size as an unsigned 16 bit integer],
+    [Announce a firmware update],
+
+    [Update Begin],
+    [10],
+    [Starting with a 0x01 byte followed by the total update size as an unsigned 32 bit integer],
+    [Begin the firmware update],
+
+    [Update Chunk],
+    [10],
+    [Starting with a 0x02 byte followed by the chunk offset as an unsigned 32 bit integer and the firmware bytes of that chunk],
+    [Part of the new firmware],
+
+    [Update End], [10], [Just a 0x03 byte], [Announce that the update is done],
   ),
-  caption: [ESP32-P4 pin mapping],
+  caption: [#acr("CSP") commands receivable by the SSTV system],
 )
 
-== Mission Constraints
-
-#figure(
-  image("../generated/use-case.svg", width: 80%),
-)
 
 == Community Input
 
@@ -64,9 +80,9 @@ The secondary payload of MOVE-IIIa is fundamentally a service offered to the ama
     [TRGFelix],
     [Rejected because decoding SSDV requires a more complex setup than SSTV, which just needs an FM radio and a smartphone running SSTV decoding software],
 
-    [Enable Image Relay via VHF],
+    [Enable Image Relay via #acr("VHF")],
     [tsgmob],
-    [Rejected because the hardware does not allow VHF uplink],
+    [Rejected because the hardware does not allow #acr("VHF") uplink],
 
     [Send pre-saved Images for Special Events],
     [Own_Event_4363],

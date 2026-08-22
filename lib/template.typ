@@ -212,6 +212,20 @@
 
   // Figures, tables and equations
   set figure(gap: 0.8em)
+  // Allow tables to break across pages.
+  show figure.where(kind: table): set block(breakable: true)
+  // Tables have no native corner radius, so draw the outer border on a
+  // rounded, clipping block and keep only the inner grid lines on the table.
+  set table(stroke: (x, y) => (
+    left: if x > 0 { 1pt + custom-lightgray },
+    top: if y > 0 { 1pt + custom-lightgray },
+  ))
+  show table: it => block(
+    radius: 4pt,
+    clip: true,
+    stroke: 1pt + custom-lightgray,
+    it,
+  )
   set math.equation(numbering: "(1)")
 
   // --- Title page (no header/footer, unnumbered) --------------------------

@@ -7,3 +7,7 @@
 
 # directories that should stay local
 local/
+.claude/
+
+# npm dependencies of the Miro fetch script
+scripts/miro/node_modules/
