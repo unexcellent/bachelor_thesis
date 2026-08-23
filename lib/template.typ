@@ -185,7 +185,7 @@
   // Helvetica Neue mirrors TUM's / the WARR template's corporate typeface.
   set text(font: "Helvetica Neue", size: 11pt, lang: "en")
   // ~1.5 line spacing with a classic first-line indent instead of paragraph gaps.
-  set par(justify: true, leading: 1em, spacing: 1em, first-line-indent: 1.5em)
+  set par(justify: true, leading: 1em, spacing: 1.6em, first-line-indent: 0pt)
 
   // Page geometry (WARR template: 3 cm sides, 3.5 cm top/bottom).
   set page(
