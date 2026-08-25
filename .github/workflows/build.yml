@@ -25,14 +25,8 @@ jobs:
 
       - uses: typst-community/setup-typst@v4
 
-      # miro-export requires Node >= 22
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
-      - name: Download diagrams from Miro
-        run: ./fetch_miro.sh
-
+      # Diagrams are exported from Miro locally via ./fetch_miro.sh and
+      # committed to figures/imported/, so CI just uses the checked-in SVGs.
       - name: Compile thesis
         run: |
           mkdir -p public

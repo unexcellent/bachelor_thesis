@@ -85,6 +85,31 @@ $ V = 0.439 dot R + 0.368 dot G - 0.071 dot B + 128 $ <eq-chromiance-red>
 
 === Robot 36 Color Model
 
+Robot 36 tries to maximize image quality while keeping transmission time to a minimum. Since the human eye can identify differences in luminosity much better than differences in chromiance, YUV is a natural choice for Robot 36. While the mode transmits luminance for every line, it only transmits blue chromiance for odd lines and red chromiance for even. While this fundamentally blends lines together vertically in a lossy process, the image appearance is mostly kept intact @daytona-paper[p.~5].
+
+@tab-robot36-lines shows two of the 240 scan-lines of a Robot 36C image.
+
+#figure(
+  table(
+    columns: 3,
+    align: left,
+    [*Duration [ms]*], [*Frequency [Hz]*], [*Identity*],
+    [9], [1200], [Sync pulse],
+    [3], [1500], [Sync porch],
+    [88], [Dependent on value], [Luminance for all 360 pixels],
+    [4.5], [1500], ["Odd" separator pulse],
+    [1.5], [1900], [Porch],
+    [44], [Dependent on value], [Blue chromiance for all 360 pixels],
+    [], [], [],
+    [9], [1200], [Sync pulse],
+    [3], [1500], [Sync porch],
+    [88], [Dependent on value], [Luminance for all 360 pixels],
+    [4.5], [1500], ["Even" separator pulse],
+    [1.5], [1900], [Porch],
+    [44], [Dependent on value], [Red chromiance],
+  ),
+  caption: [Two scan-lines of a Robot 36C transmission @daytona-paper[p.~5].],
+) <tab-robot36-lines>
 
 
 == Software Modularization
