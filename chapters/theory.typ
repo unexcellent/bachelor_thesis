@@ -8,7 +8,21 @@
 
 #acr("SSTV") as an analog technology fundamentally relies on tones modulated onto much higher frequency radio waves to transmit the image. This is done the same way that most analog radio station transfer sounds today, via #acr("FM") @sstv-handbook[p.~14].
 
-- TODO
+#acr("FM") is an angle modulation method, in which a source signal $f(t)$ controls the argument of a carrier wave rather than its amplitude. The modulated signal can be calculated by @eq-fm-signal with $f_0$ denoting the carrier frequency and $c$ denoting a modulator constant @signal-uebertragung[pp.~368-370].
+
+$
+  m(t) = cos(2 pi f_0 t + 2 pi c integral_(-oo)^t f(tau) dif tau)
+$ <eq-fm-signal>
+
+The information encoded in the signal is contained in its instantaneous frequency $f_i (t)$ which is the time derivative of the cosine argument. As described in @eq-instantaneous-frequency, $f_i$ deviates from the carrier frequency proportionally to the source signal.
+
+$
+  f_i (t) = 1 / (2 pi) dot dif / (dif t) (2 pi f_0 t + 2 pi c integral_(-oo)^t f(tau) dif tau) = f_0 + c dot f(t)
+$ <eq-instantaneous-frequency>
+
+Since the amplitude of the modulated signal carries no information, #acr("FM") is more robust to noise but requires a higher transmission bandwidth @signal-uebertragung[p.~368].
+
+In the case of #acr("SSTV"), this means that all image information is purely encoded in the instantaneous frequency of the received signal and can therefore be described as a series of frequencies and their durations.
 
 === Synchronization
 
@@ -113,3 +127,5 @@ Robot 36 tries to maximize image quality while keeping transmission time to a mi
 
 
 == Software Modularization
+
+- TODO
