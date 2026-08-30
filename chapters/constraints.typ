@@ -27,6 +27,8 @@ A table mapping the GPIO pins of the #acr("MCU") can be found in table @tab-gpio
 
 == Commands
 
+The commanding is used to control the SSTV system via the RS485 link to the payload board. Commands are encoded as #acr("CSP") messages and can originate from any board on the satellite bus or the ground station.
+
 #figure(
   table(
     columns: 4,
@@ -40,7 +42,7 @@ A table mapping the GPIO pins of the #acr("MCU") can be found in table @tab-gpio
     [SSTV Trigger],
     [11],
     [Any payload starting with the string "SSTV"],
-    [Triggers the SSTV transmission],
+    [Commands the SSTV system to capture the images and transmit them via the audio channel],
 
     [Update Announcement],
     [10],
@@ -65,7 +67,7 @@ A table mapping the GPIO pins of the #acr("MCU") can be found in table @tab-gpio
 
 == Community Input
 
-The secondary payload of MOVE-IIIa is fundamentally a service offered to the amateur satellite community. As such, its design should reflect the wishes of this stakeholder group. Therefore, it was decided that a post#footnote[link to the post: #link("https://www.reddit.com/r/amateursatellites/comments/1s6255m/i_am_building_the_sstv_payload_for_a_satellite/")] should be created in the r/amateursatellites subreddit describing the project and asking for feedback and inputs. The individual points concerning the software are listed in the following table.
+The secondary payload of MOVE-IIIa is fundamentally a service offered to the amateur satellite community. As such, its design should reflect the wishes of this stakeholder group. Therefore, it was decided that a post @reddit-sstv-post should be created in the r/amateursatellites subreddit describing the project and asking for feedback and inputs. The individual points concerning the software are listed in the following table.
 
 #figure(
   table(
@@ -78,7 +80,7 @@ The secondary payload of MOVE-IIIa is fundamentally a service offered to the ama
 
     [Send via SSDV],
     [TRGFelix],
-    [Rejected because decoding SSDV requires a more complex setup than SSTV, which just needs an FM radio and a smartphone running SSTV decoding software],
+    [Rejected because decoding SSDV requires a more complex setup than SSTV @ukhas-ssdv, which just needs an FM radio and a smartphone running SSTV decoding software],
 
     [Enable Image Relay via #acr("VHF")],
     [tsgmob],
@@ -88,7 +90,7 @@ The secondary payload of MOVE-IIIa is fundamentally a service offered to the ama
     [Own_Event_4363],
     [Rejected for the initial software due to increased complexity and memory requirements. However, this might be added in a future version],
   ),
-  caption: [Input from amateur satellite community with verdict],
+  caption: [Input from amateur satellite community with verdict @reddit-sstv-post],
 )
 
 
@@ -102,23 +104,23 @@ The above constraints and inputs translate into the following list of requiremen
     align: left,
     [*ID*], [*Description*],
     [req0],
-    [The software should be able to take an image in the visible light spectrum],
+    [The software shall be able to take an image in the visible light spectrum],
 
     [req1],
-    [The software should be able to take an image in the infrared light spectrum],
+    [The software shall be able to take an image in the infrared light spectrum],
 
-    [req2], [The software should encode the images to tones via Robot 36C],
-    [req3],
-    [The software should transmit tones as samples to the payload board],
+    [req2], [The software shall encode the images to tones via Robot 36C],
+
+    [req3], [The software shall transmit tones as samples to the payload board],
 
     [req4],
-    [The software should trigger the SSTV transmission if a command is received via RS485],
+    [The software shall trigger the SSTV transmission if a command is received via RS485],
 
-    [req5], [The software should be updateable via RS485],
+    [req5], [The software shall be updateable via RS485],
     [req6],
-    [The firmware size should be small enough to allow transmitting the entire binary within a single overpass],
+    [The firmware size shall be small enough to allow transmitting the entire binary within a single overpass],
 
-    [req7], [The software should keep idle power below 0.1 W],
+    [req7], [The software shall keep idle power below 0.1 W],
   ),
   caption: [Requirements for the software],
 )

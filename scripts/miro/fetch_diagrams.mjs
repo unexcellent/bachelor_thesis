@@ -39,6 +39,14 @@ await mkdir(outDir, { recursive: true });
 
 const board = new MiroBoard({ boardId: BOARD_ID });
 try {
+  // miro-export waits only 3s (hardcoded) for the Miro SDK, which now takes
+  // ~8s to load. Wait for it here so the library's check passes instantly.
+  const page = await board.page;
+  await page.waitForFunction(
+    () => window.miro && window.cmd?.board?.api?.isAllWidgetsLoaded(),
+    { timeout: 60_000 }
+  );
+
   for (const { id, title } of frames) {
     const name = path.basename(title.trim());
     const file = path.join(outDir, `${name}.svg`);
