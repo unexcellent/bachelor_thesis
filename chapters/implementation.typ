@@ -14,7 +14,34 @@ After considering the advantages and disadvantages of different languages, Rust 
 
 == Software Architecture
 
-- why split between beacon and sstv
+The decision was made to split the functionality in this code into two libraries (also called crates in the Rust ecosystem):
+
+- *sstv*: The `sstv` crate handles encoding the images into the audio samples while being compatible with microcontroller architectures. To provide further value to the community, it was decided to also implement most other modes from the Dayton paper @daytona-paper, decoding of those modes and support file based encoding and decoding. The crate has been made available via Rust's default package registry crates.io#footnote("https://crates.io/crates/sstv").
+- *beacon*: `beacon` is both the compiled firmware running on the SSTV system and a crate providing interfaces for third-party systems to benefit from the work done in this thesis.
+
+Extracting the #acr("SSTV") logic has the benefit of providing the community with a focused crate with a much broader target group than people interested to build their own SSTV payload. And since `beacon` also imports it as a dependency, it validates the public interface.
+
+=== SSTV Architecture
+
+=== Beacon Architecture
+
+`beacon` offers multiple abstraction layers targeting different third-party users.
+
+- multiple layers of public interfaces
+  - public transmit_sstv(), idle() and updating()
+    - what liberties that gives to the third-party
+      - implement custom cameras
+      - no limitations on the number of cameras
+      - implement custom audio device
+      - implement custom commanding link
+    - what is assumed
+      - commands stay the same
+      - stays on the ESP32
+      - Robot 36 encoding
+      - transmitted messages
+      - blocking and terminal by nature
+  - device implementations
+
 
 == States
 
