@@ -23,25 +23,33 @@ Extracting the #acr("SSTV") logic has the benefit of providing the community wit
 
 === SSTV Architecture
 
-=== Beacon Architecture
+The core responsibility of the `sstv` crate is encoding an image into audio samples which are then transmitted using `beacon`. Because this has to run on a microcontroller with low memory, the crate is `no_std` meaning it does not depend on Rust's standard library and can therefore be compiled for the ESP32 without an operating system underneath.
 
-`beacon` offers multiple abstraction layers targeting different third-party users.
+The `no_std` constraint also shapes how the algorithm is designed. Rather than buffering the audio samples, the encoding path is built from iterators that each consume the previous stage on demand.
 
-- multiple layers of public interfaces
-  - public transmit_sstv(), idle() and updating()
-    - what liberties that gives to the third-party
-      - implement custom cameras
-      - no limitations on the number of cameras
-      - implement custom audio device
-      - implement custom commanding link
-    - what is assumed
-      - commands stay the same
-      - stays on the ESP32
-      - Robot 36 encoding
-      - transmitted messages
-      - blocking and terminal by nature
-  - device implementations
+The encoding pipeline consumes an iterator of `RgbPixel` into the `Encoder` struct which yields a stream of `Tone`s defined by a frequency and a duration. A `Synthesizer` then turns every `Tone` into a 16 bit audio sample.
 
+Due to the iterator design, only a fraction of the transmission is ever held in memory before it is passed on. This allows `beacon` to transmit an image without ever materializing the full audio signal which keeps the memory footprint small enough for a microcontroller.
+
+=== Beacon Architecture <sec-beacon-architecture>
+
+`beacon` is fundamentally built around a recurring pattern separating the reusable logic from the mission-specific hardware. The logic was made reusable by Rust's trait system, which lets the developer define interfaces to be used in the TODO. The MOVE-IIIa specific firmware, which defines the concrete pins and peripherals unique to the hardware, then implement those interfaces in an isolated module making MOVE-IIIa a carrier variant of the crate rather than a fork of it.
+
+As a consequence, `beacon` offers multiple abstraction layers targeting different third-party users. A user can call the firmware at the top level and only swap out individual devices, or replace whole subsystems while reusing the orchestration logic.
+
+- *Public entry points*: The behaviour of the firmware is reachable through the three public functions `idle()`, `transmit_sstv()` and `updating()`. They encapsulate the entire runtime behaviour, so a third-party system can implement the crate without reimplementing the control flow.
+  - *Freedoms provided to the third party*: The entry points are generic via the traits, which allows hardware substitution.
+    - Custom cameras can be implemented behind the `Camera` trait
+    - The system allows any number of cameras to be operated
+    - A custom audio output device can be implemented behind the `AudioChannel` trait
+    - A custom commanding link can be implemented behind the `CommandLink` trait
+  - *Fixed Assumptions*: However, some assumptions about the third party system were made limiting flexibility.
+    - The set of receivable commands stays the same
+    - The set of transmitted messages is fixed
+    - Images are encoded using the Robot 36C mode
+    - The entry points are blocking and terminal by nature, as `idle()` never returns
+    - The firmware runs on the ESP32
+- *Device implementations*: In addition, the specific devices used in MOVE-IIIa were implemented separately from the hardware interface commucating with them allowing third parties to reuse the devices outside of the ESP32 ecosystem. For example, the implementations of the SC850SL and MI48Dx cameras can be used in any embedded project even outside of the #acr("SSTV") domain.
 
 == States
 
