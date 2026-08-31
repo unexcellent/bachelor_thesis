@@ -93,7 +93,6 @@ The secondary payload of MOVE-IIIa is fundamentally a service offered to the ama
   caption: [Input from amateur satellite community with verdict @reddit-sstv-post],
 )
 
-
 == Requirements
 
 The above constraints and inputs translate into the following list of requirements.
@@ -103,24 +102,26 @@ The above constraints and inputs translate into the following list of requiremen
     columns: 2,
     align: left,
     [*ID*], [*Description*],
-    [req0],
-    [The software shall be able to take an image in the visible light spectrum],
 
-    [req1],
-    [The software shall be able to take an image in the infrared light spectrum],
+    [req0], [The software shall run on the ESP32-P4.],
 
-    [req2], [The software shall encode the images to tones via Robot 36C],
+    [req1], [The software shall read an image from the SC850SL RGB camera.],
 
-    [req3], [The software shall transmit tones as samples to the payload board],
+    [req2], [The software shall read an image from the MI1602 thermal camera.],
 
-    [req4],
-    [The software shall trigger the SSTV transmission if a command is received via RS485],
+    [req3], [The software shall encode the images via Robot 36C.],
 
-    [req5], [The software shall be updateable via RS485],
-    [req6],
+    [req4], [The software shall output the audio samples via I2S.],
+
+    [req5],
+    [The software shall trigger an #acr("SSTV") transmission if the corresponding command is received.],
+
+    [req6], [The software shall be able to receive firmware updates via UART.],
+
+    [req7],
     [The firmware size shall be small enough to allow transmitting the entire binary within a single overpass],
 
-    [req7], [The software shall keep idle power below 0.1 W],
+    [req8], [The software shall keep idle power below 0.1 W],
   ),
   caption: [Requirements for the software],
 )
