@@ -2,15 +2,79 @@
 
 = Implementation
 
-== Software Stack
+== Language Selection
 
-The ESP32 as a widely adopted platform offers multiple programing languages to write the firmware. The main programing languages are:
+The ESP32 as a widely adopted platform offers multiple programing languages to write the firmware. The main candidate languages are:
 
 - *C / C++*: C and C++ are the languages used by the official software development kit from Espressif Systems @espressif2026espidf. Therefore, they offer the largest amount of features and the most stable implementation.
 - *Rust*: Rust offers modern ergonomics and prevents the majority of memory crashes via its compiler-enforced borrow-checker model @rust-vs-cpp.
 - *Python*: Python can be used to program the ESP32 using the community developed MicroPython port @micropython.
 
-After considering the advantages and disadvantages of different languages, Rust was chosen. MicroPython was disqualified due to large computational overhead @plauska2023evaluation. C / C++ was deemed too risky due to the manual memory management. Memory bugs in orbit would likely lead to an unrecoverable and undebuggable state. While low-level Rust is not entirely immune to memory bugs, the risk is significantly reduced. Therefore, Rust was chosen for the firmware.
+To keep the decision objective, the language was selected through a weighted-criteria analysis. A set of assessment criteria was derived from the requirements in @tab-requirements and weighted according to their impact on the mission before any language was assessed. The weights reflect that the firmware runs on a resource-constrained microcontroller that cannot be physically serviced once in orbit. Each candidate was then scored from one (poor) to five (excellent) against every criterion and the weighted sum determined the outcome. The criteria and their weights are listed in @tab-lang-criteria and the resulting scores in @tab-lang-scores.
+
+#figure(
+  table(
+    columns: (auto, auto, 1fr),
+    align: (left, center, left),
+    [*Criterion*], [*Weight*], [*Explanation*],
+
+    [Memory safety & fault tolerance],
+    [0.30],
+    [A memory bug in orbit would likely lead to an unrecoverable and undebuggable state.],
+
+    [Runtime performance],
+    [0.20],
+    [Robot 36C encoding (req3) and the continuous I2S sample output (req4) are soft-real-time and must not fall behind.],
+
+    [Memory & flash footprint],
+    [0.20],
+    [The binary must be small enough to be uplinked within a single overpass (req7) and RAM is scarce on the #acr("MCU").],
+
+    [Toolchain & ecosystem maturity],
+    [0.15],
+    [The software must run on the ESP32-P4 (req0); this covers peripheral libraries, hardware abstraction and debugging support for that specific target.],
+
+    [Error handling & concurrency],
+    [0.15],
+    [Command dispatch (req5) and the update flow (req6) require explicit, non-silent error paths so faults can be reported to the ground.],
+  ),
+  caption: [Assessment criteria for the firmware language and their weights],
+) <tab-lang-criteria>
+
+#figure(
+  table(
+    columns: 4,
+    align: (left, center, center, center),
+    [*Criterion*], [*C / C++*], [*Rust*], [*MicroPython*],
+
+    [Memory safety & fault tolerance],
+    [2 @miller2019proactive],
+    [5 @xu2021rustcve],
+    [4 @micropython],
+
+    [Runtime performance],
+    [5 @plauska2023evaluation],
+    [5 @plauska2023evaluation],
+    [1 @plauska2023evaluation],
+
+    [Memory & flash footprint],
+    [5 @plauska2023evaluation],
+    [4 @plauska2023evaluation],
+    [2 @plauska2023evaluation],
+
+    [Toolchain & ecosystem maturity],
+    [5 @espressif2026espidf],
+    [3 @rust-on-esp],
+    [3 @micropython],
+
+    [Error handling & concurrency], [2], [5 @rust-book], [3],
+
+    [*Weighted total*], [*3.65*], [*4.50*], [*2.70*],
+  ),
+  caption: [Weighted scores of the candidate languages (1 = poor, 5 = excellent)],
+) <tab-lang-scores>
+
+With a weighted total of 4.50, Rust was chosen for the firmware. MicroPython is ruled out by its computational overhead and footprint @plauska2023evaluation. C / C++ scores well on ecosystem and footprint but is held back by manual memory management, which causes the majority of security-relevant errors @miller2019proactive. While low-level Rust is not entirely immune to memory bugs, they are confined to explicitly marked `unsafe` code, significantly reducing the risk @xu2021rustcve.
 
 == Software Architecture
 

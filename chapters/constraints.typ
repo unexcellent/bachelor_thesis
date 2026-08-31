@@ -119,9 +119,9 @@ The above constraints and inputs translate into the following list of requiremen
     [req6], [The software shall be able to receive firmware updates via UART.],
 
     [req7],
-    [The firmware size shall be small enough to allow transmitting the entire binary within a single overpass],
+    [The firmware size shall be small enough to allow transmitting the entire binary within a single overpass.],
 
-    [req8], [The software shall keep idle power below 0.1 W],
+    [req8], [The software shall keep idle power below 0.1 W.],
   ),
   caption: [Requirements for the software],
-)
+) <tab-requirements>
