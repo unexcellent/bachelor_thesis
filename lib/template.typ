@@ -54,7 +54,7 @@
     }
   }
   label
-  v(-0.3em)
+  v(-0.8em)
   line(length: 100%, stroke: 1pt + custom-lightgray)
 }
 
@@ -204,9 +204,14 @@
   show heading.where(level: 4): set text(size: 11pt)
   show heading.where(level: 5): set text(size: 11pt, fill: custom-gray)
   show heading.where(level: 6): set text(size: 11pt, fill: custom-gray)
-  // Every top-level section starts on a new page.
+  // Every top-level section starts on a new page, except these front-matter
+  // sections which are paired onto the preceding section's page (Kurzfassung
+  // shares the Abstract page, List of Tables shares the List of Figures page).
+  let paired-front-matter = ([Kurzfassung], [List of Tables])
   show heading.where(level: 1): it => {
-    pagebreak(weak: true)
+    if it.body not in paired-front-matter {
+      pagebreak(weak: true)
+    }
     it
   }
 
