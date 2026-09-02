@@ -14,9 +14,11 @@
 // #acr("...") (expands the long form on first use), and rendered as the
 // List of Abbreviations in the front matter. Keep alphabetically sorted.
 #let abbreviations = (
+  "ARISS": "Amateur Radio on the International Space Station",
   "CSP": "Cubesat Space Protocol",
   "FM": "Frequency Modulation",
   "MCU": "Microcontroller Unit",
+  "MOVE": "Munich Orbital Verification Experiment",
   "SSTV": "Slow-Scan Television",
   "VHF": "Very High Frequency",
   "VIS": "Visual Interval Signaling",

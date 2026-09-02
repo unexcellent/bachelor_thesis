@@ -6,7 +6,7 @@
 
 The ESP32 as a widely adopted platform offers multiple programing languages to write the firmware. The main candidate languages are:
 
-- *C / C++*: C and C++ are the languages used by the official software development kit from Espressif Systems @espressif2026espidf. Therefore, they offer the largest amount of features and the most stable implementation.
+- *C / C++*: C and C++ are the languages used by the official software development kit from Espressif Systems @espressif2026espidf.
 - *Rust*: Rust offers modern ergonomics and prevents the majority of memory crashes via its compiler-enforced borrow-checker model @rust-vs-cpp.
 - *Python*: Python can be used to program the ESP32 using the community developed MicroPython port @micropython.
 
