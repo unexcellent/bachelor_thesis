@@ -187,6 +187,15 @@
   // ~1.5 line spacing with a classic first-line indent instead of paragraph gaps.
   set par(justify: true, leading: 1em, spacing: 1.6em, first-line-indent: 0pt)
 
+  // Inline code spans get a light grey pill, matching GitHub's markdown rendering.
+  show raw.where(block: false): it => box(
+    fill: rgb("#e4e6e8"),
+    inset: (x: 3pt),
+    outset: (y: 3pt),
+    radius: 3pt,
+    it,
+  )
+
   // Page geometry (WARR template: 3 cm sides, 3.5 cm top/bottom).
   set page(
     paper: "a4",
