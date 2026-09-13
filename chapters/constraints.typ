@@ -24,7 +24,6 @@ Within the SSTV system, the #acr("MCU") is the component running the software su
 
 A table mapping the GPIO pins of the #acr("MCU") can be found in table @tab-gpio.
 
-
 == Commands
 
 The commanding is used to control the SSTV system via the RS485 link to the payload board. Commands are encoded as #acr("CSP") messages and can originate from any board on the satellite bus or the ground station.
@@ -95,7 +94,7 @@ The secondary payload of MOVE-IIIa is fundamentally a service offered to the ama
 
 == Requirements
 
-The above constraints and inputs translate into the following list of requirements.
+The above constraints and inputs contribute to the following list of requirements.
 
 #figure(
   table(
@@ -103,25 +102,36 @@ The above constraints and inputs translate into the following list of requiremen
     align: left,
     [*ID*], [*Description*],
 
-    [req0], [The software shall run on the ESP32-P4.],
+    [req00], [The software shall run on the ESP32-P4.],
 
-    [req1], [The software shall read an image from the SC850SL RGB camera.],
+    [req01], [The software shall read an image from the SC850SL RGB camera.],
 
-    [req2], [The software shall read an image from the MI1602 thermal camera.],
+    [req02], [The software shall read an image from the MI1602 thermal camera.],
 
-    [req3], [The software shall encode the images via Robot 36C.],
+    [req03], [The software shall encode the images via Robot 36C.],
 
-    [req4], [The software shall output the audio samples via I2S.],
+    [req04], [The software shall output the audio samples via I2S.],
 
-    [req5],
+    [req05],
     [The software shall trigger an #acr("SSTV") transmission if the corresponding command is received.],
 
-    [req6], [The software shall be able to receive firmware updates via UART.],
+    [req06],
+    [If a camera encounters an error, the transmission of its corresponding image shall be skipped while the image of the working camera shall be transmitted.],
 
-    [req7],
+    [req07], [The software shall be able to receive firmware updates via UART.],
+
+    [req08], [A failed update shall not lead to an unrecoverable state.],
+
+    [req09],
+    [The software shall communicate any recoverable errors to the ground station.],
+
+    [req10],
+    [The software shall communicate when an SSTV transmission starts and ends to the payload board.],
+
+    [req11],
     [The firmware size shall be small enough to allow transmitting the entire binary within a single overpass.],
 
-    [req8], [The software shall keep idle power below 0.1 W.],
+    [req12], [The software shall keep idle power below 0.1 W.],
   ),
   caption: [Requirements for the software],
 ) <tab-requirements>
