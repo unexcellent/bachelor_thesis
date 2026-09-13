@@ -130,8 +130,6 @@ The above constraints and inputs contribute to the following list of requirement
 
     [req11],
     [The firmware size shall be small enough to allow transmitting the entire binary within a single overpass.],
-
-    [req12], [The software shall keep idle power below 0.1 W.],
   ),
   caption: [Requirements for the software],
 ) <tab-requirements>

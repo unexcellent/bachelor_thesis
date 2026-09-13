@@ -63,6 +63,18 @@ This test is supposed to verify the firmware behaves correctly in the case that 
 
 The test covering the scenario that only the thermal camera is working is identical to the RGB only transmission test other than the fact that flashed software has the RGB camera disabled instead of the thermal camera.
 
+=== Update Successfully
+
+This test verifies that the device can receive updates via RS485 and runs the new firmware after the update sequence was successfully performed. The sequence is shown in @img-test-update-successful.
+
+#figure(
+  image("../figures/imported/sd_test_update_successful.svg", width: 100%),
+  caption: [Sequence diagram of the successful update test.],
+) <img-test-update-successful>
+
+The test is considered successful if a boot info message is received by the Raspberry Pi, because the device only reboots if the update succeeded.
+
+
 == Modularity
 
 - show an example on how another camera could be added
