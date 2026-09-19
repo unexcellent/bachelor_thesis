@@ -61,7 +61,7 @@ The commanding is used to control the SSTV system via the RS485 link to the payl
     [Update End], [10], [Just a 0x03 byte], [Announce that the update is done],
   ),
   caption: [#acr("CSP") commands receivable by the SSTV system],
-)
+) <tab-commands>
 
 
 == Community Input

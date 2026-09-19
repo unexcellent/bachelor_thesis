@@ -184,6 +184,9 @@
   // Base text and paragraph settings.
   // Helvetica Neue mirrors TUM's / the WARR template's corporate typeface.
   set text(font: "Helvetica Neue", size: 11pt, lang: "en")
+  // Helvetica Neue's OpenType superscript glyphs render as a tiny centered dot,
+  // which mangles footnote markers; force Typst to synthesise them instead.
+  set super(typographic: false, size: 0.8em)
   // ~1.5 line spacing with a classic first-line indent instead of paragraph gaps.
   set par(justify: true, leading: 1em, spacing: 1.6em, first-line-indent: 0pt)
 
@@ -226,8 +229,9 @@
 
   // Figures, tables and equations
   set figure(gap: 0.8em)
-  // Allow tables to break across pages.
+  // Allow tables and code listings to break across pages.
   show figure.where(kind: table): set block(breakable: true)
+  show figure.where(kind: raw): set block(breakable: true)
   // Tables have no native corner radius, so draw the outer border on a
   // rounded, clipping block and keep only the inner grid lines on the table.
   set table(stroke: (x, y) => (

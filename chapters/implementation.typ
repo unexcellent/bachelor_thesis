@@ -20,23 +20,23 @@ To keep the decision objective, the language was selected through a weighted-cri
 
     [Memory safety & fault tolerance],
     [0.30],
-    [A memory bug in orbit would likely lead to an unrecoverable and undebuggable state.],
+    [A memory bug in orbit would likely lead to an unrecoverable and undebuggable state, violating req08.],
 
     [Runtime performance],
     [0.20],
-    [Robot 36C encoding (req3) and the continuous I2S sample output (req4) are soft-real-time and must not fall behind.],
+    [Robot 36C encoding (req03) and the continuous I2S sample output (req04) are soft-real-time and must not fall behind.],
 
     [Memory & flash footprint],
     [0.20],
-    [The binary must be small enough to be uplinked within a single overpass (req7) and RAM is scarce on the #acr("MCU").],
+    [The binary must be small enough to be uplinked within a single overpass (req11) and RAM is scarce on the #acr("MCU").],
 
     [Toolchain & ecosystem maturity],
     [0.15],
-    [The software must run on the ESP32-P4 (req0); this covers peripheral libraries, hardware abstraction and debugging support for that specific target.],
+    [The software must run on the ESP32-P4 (req00) and interface with its peripherals such as the cameras (req01, req02); this covers peripheral libraries, hardware abstraction and debugging support for that specific target.],
 
     [Error handling & concurrency],
     [0.15],
-    [Command dispatch (req5) and the update flow (req6) require explicit, non-silent error paths so faults can be reported to the ground.],
+    [Degraded camera operation (req06) and the update flow (req07) require explicit, non-silent error paths so faults can be reported to the ground (req09).],
   ),
   caption: [Assessment criteria for the firmware language and their weights],
 ) <tab-lang-criteria>
