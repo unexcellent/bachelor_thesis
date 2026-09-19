@@ -90,7 +90,7 @@ The secondary payload of MOVE-IIIa is fundamentally a service offered to the ama
     [Rejected for the initial software due to increased complexity and memory requirements. However, this might be added in a future version],
   ),
   caption: [Input from amateur satellite community with verdict @reddit-sstv-post],
-)
+) <tab-community-input>
 
 == Requirements
 

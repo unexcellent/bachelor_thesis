@@ -52,7 +52,7 @@
 #include "chapters/constraints.typ"
 #include "chapters/implementation.typ"
 #include "chapters/verification.typ"
-#include "chapters/conclusion.typ"
+#include "chapters/discussion.typ"
 
 // --- Back matter -------------------------------------------------------------
 // Following the WARR template, the suffix sections are lettered (A, B, C ...)
