@@ -85,20 +85,25 @@ Robot 36 tries to maximize image quality while keeping transmission time to a mi
   caption: [Two scan-lines of a Robot 36C transmission.],
 ) <img-robot36-lines>
 
-== Software Modularization
+== Modular Programming
+
+Modular programming has been a corner stone in quality software since at least the 1970s. Applying those principles yields benefits in the following domains @parnas-criteria[p.~1054]:
+- *Velocity*: Development will be accelerated due to less need for communication between developers.
+- *Flexibility*: Modules can be substantially changed without the need to change the rest of the system.
+- *Comprehensibility*: To understand parts of a system does not require in-depth knowledge of the system's other parts.
+For this thesis, the main benefit of modularization is that the #acr("SSTV") firmware can be ported to new hardware by replacing only its hardware-specific modules @parnas-extension[p.~129].
+
+The following sections detail how modularity can be achieved.
 
 === Modules and Information Hiding
 
-A module in software engineering refers to part of a program that groups related functionality separated from the rest of the system @iso-24765[p.~279]. The module exposes its logic via a public interface which hides the exact implementation while communicating how to use the module to the developers. Separating a large system into modules - also called modularization - allows other parts of the system to reuse the module's functionality without having to implement it themselves @iso-24765[pp.~232,384].
+A module in software engineering refers to part of a program that groups related functionality separated from the rest of the system @iso-24765[p.~279]. In that regard, it describes less a unit of code than a unit of responsibility. In a well modularized system, every modules is responsible for one design decision which it hides from all other parts of the system. Generally, the decision to hide are the ones most likely to change since a change to those hidden decisions does not propagate to the rest of the system @parnas-criteria[p.~1056]. The process of concealing the module's inner logic is called information hiding @iso-24765[p.~220].
 
-The technique of concealing the inner logic of a module while only exposing the interface specification is often called information hiding. In a complex system, hiding information limits the context necessary to reason about software behavior and therefore improves maintainability @iso-24765[p.~220].
+=== Interfaces
 
-=== Cohesion and Coupling
+A module exposes its functionality through public interfaces which should reveal as little as possible about the hidden decisions why still communicating how the module should be used @parnas-criteria[p.~1056]. Each interface is comprised of two parts. The formal part contains signatures and types and is usually enforced by the programming language. The informal part covers the behavior of the module or nuanced rules that need to be communicated through documentation @philosophy-of-software[ch.~4.2].
 
-Two established criteria for judging the quality of decomposition are coupling and cohesion. Coupling describes how independent separate modules are from one another while cohesion describes the degree to which elements inside a module belong together @swebok[p.~3-4]. A well modularized program keeps coupling low while maximizing cohesion. Loosely coupled modules can be changed, tested and reused with little spillover effects to other parts of the system. High cohesion keeps changes to an aspect of a system contained to a single module @modern-swe TODO: Find out which page.
+=== Program Families
 
-=== Interface Depth
+If a set of programs is designed as variations of a common design, they are called a program family. In a well constructed system, family members can be derived by adding, removing or replacing modules instead of modifying them. Every family member can then benefit from changes made to those modules @parnas-extension[p.~129-131].
 
-The interface of a module is comprised of two parts. The formal part contains signatures and types and is usually enforced by the programming language. The informal part covers the behavior of the module or nuanced rules that need to be communicated through documentation @philosophy-of-software[ch.~4].
-
-Since the implementation is hidden, the interface is the entire complexity a module adds to the rest of the system. Modules can therefore be judged by their depth where deeper modules provide powerful functionality while keeping the interfaces small. A shallow module therefore adds a large amount of complexity to the system while providing comparatively little functionality @philosophy-of-software[ch.~4].
