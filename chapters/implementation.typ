@@ -76,6 +76,45 @@ To keep the decision objective, the language was selected through a weighted-cri
 
 With a weighted total of 4.50, Rust was chosen for the firmware. MicroPython is ruled out by its computational overhead and footprint @plauska2023evaluation. C / C++ scores well on ecosystem and footprint but is held back by manual memory management, which causes the majority of security-relevant errors @miller2019proactive. While low-level Rust is not entirely immune to memory bugs, they are confined to explicitly marked `unsafe` code, significantly reducing the risk @xu2021rustcve.
 
+== Commands
+
+The commanding is used to control the SSTV system via the RS485 link to the payload board. Commands are encoded as #acr("CSP") messages and can originate from any board on the satellite bus or the ground station.
+
+#figure(
+  table(
+    columns: 4,
+    align: left,
+    [*Name*], [*Port*], [*Payload*], [*Description*],
+    [Ping],
+    [1],
+    [Any],
+    [Standard #acr("CSP") ping which should trigger a response echoing the received payload],
+
+    [SSTV Trigger],
+    [11],
+    [Any payload starting with the string "SSTV"],
+    [Commands the SSTV system to capture the images and transmit them via the audio channel],
+
+    [Update Announcement],
+    [10],
+    [Starting with a 0x00 byte followed by the data chunk size as an unsigned 16 bit integer],
+    [Announce a firmware update],
+
+    [Update Begin],
+    [10],
+    [Starting with a 0x01 byte followed by the total update size as an unsigned 32 bit integer],
+    [Begin the firmware update],
+
+    [Update Chunk],
+    [10],
+    [Starting with a 0x02 byte followed by the chunk offset as an unsigned 32 bit integer and the firmware bytes of that chunk],
+    [Part of the new firmware],
+
+    [Update End], [10], [Just a 0x03 byte], [Announce that the update is done],
+  ),
+  caption: [#acr("CSP") commands receivable by the SSTV system],
+) <tab-commands>
+
 == Software Architecture
 
 The decision was made to split the functionality in this code into two libraries (also called crates in the Rust ecosystem):

@@ -2,134 +2,158 @@
 
 = Constraints
 
-This chapter describes the process that preceded the software implementation in which the fundamental goal of the project and the needs of the different stakeholders were analysed.
+== Mission Context
 
-== Hardware
+=== Community Input
 
-The fundamental output of this thesis is a firmware which deeply interacts with the underlying hardware. Although the hardware design is out of scope for this thesis, the resulting architecture still needs to be described to explain the design decisions.
-
-In the global satellite architecture, the SSTV system is only connected to the payload board which in turn handles transmission via the #acr("VHF") spectrum and communication with the ground station.
-
-#figure(
-  image("../figures/imported/ibd_satellite.svg", width: 100%),
-  caption: [Internal block diagram of the satellite hardware (only the relevant parts)],
-)
-
-Within the SSTV system, the #acr("MCU") is the component running the software subject in this thesis and responsible for communicating with the payload board, fetching images from the cameras, processing them into #acr("SSTV") audio samples and sending those samples back to the payload board.
-
-#figure(
-  image("../figures/imported/ibd_sstv_system.svg", width: 100%),
-  caption: [Internal block diagram of the SSTV system hardware (only the relevant parts)],
-)
-
-A table mapping the GPIO pins of the #acr("MCU") can be found in table @tab-gpio.
-
-== Commands
-
-The commanding is used to control the SSTV system via the RS485 link to the payload board. Commands are encoded as #acr("CSP") messages and can originate from any board on the satellite bus or the ground station.
-
-#figure(
-  table(
-    columns: 4,
-    align: left,
-    [*Name*], [*Port*], [*Payload*], [*Description*],
-    [Ping],
-    [1],
-    [Any],
-    [Standard #acr("CSP") ping which should trigger a response echoing the received payload],
-
-    [SSTV Trigger],
-    [11],
-    [Any payload starting with the string "SSTV"],
-    [Commands the SSTV system to capture the images and transmit them via the audio channel],
-
-    [Update Announcement],
-    [10],
-    [Starting with a 0x00 byte followed by the data chunk size as an unsigned 16 bit integer],
-    [Announce a firmware update],
-
-    [Update Begin],
-    [10],
-    [Starting with a 0x01 byte followed by the total update size as an unsigned 32 bit integer],
-    [Begin the firmware update],
-
-    [Update Chunk],
-    [10],
-    [Starting with a 0x02 byte followed by the chunk offset as an unsigned 32 bit integer and the firmware bytes of that chunk],
-    [Part of the new firmware],
-
-    [Update End], [10], [Just a 0x03 byte], [Announce that the update is done],
-  ),
-  caption: [#acr("CSP") commands receivable by the SSTV system],
-) <tab-commands>
-
-
-== Community Input
-
-The secondary payload of MOVE-IIIa is fundamentally a service offered to the amateur satellite community. As such, its design should reflect the wishes of this stakeholder group. Therefore, it was decided that a post @reddit-sstv-post should be created in the r/amateursatellites subreddit describing the project and asking for feedback and inputs. The individual points concerning the software are listed in the following table.
+An #acr("SSTV") payload is fundamentally a service offered to the amateur satellite community. As such, its design should reflect the wishes of this stakeholder group. Therefore, it was decided that a post @reddit-sstv-post should be created in the r/amateursatellites subreddit describing the project and asking for feedback and inputs. The individual points concerning the software are listed in @tab-community-input.
 
 #figure(
   table(
     columns: 3,
     align: left,
     [*Input*], [*Authors*], [*Verdict*],
-    [Encode the Images via Robot 36C],
+    [Encode the images via Robot 36C],
     [ISpentAllMyMoneyOnPi, TacitMoose, tsgmob, Own_Event_4363],
-    [Accepted into the requirements],
+    [Accepted into the requirements.],
 
     [Send via SSDV],
     [TRGFelix],
-    [Rejected because decoding SSDV requires a more complex setup than SSTV @ukhas-ssdv, which just needs an FM radio and a smartphone running SSTV decoding software],
+    [Rejected because decoding SSDV requires a more complex setup than SSTV @ukhas-ssdv, which just needs an FM radio and a smartphone running SSTV decoding software.],
 
-    [Enable Image Relay via #acr("VHF")],
+    [Use the payload to relay images between radio operators],
     [tsgmob],
-    [Rejected because the hardware does not allow #acr("VHF") uplink],
+    [Rejected due to the increased coordination and supervision effort needed to allow operators to upload their own images.],
 
     [Send pre-saved Images for Special Events],
     [Own_Event_4363],
-    [Rejected for the initial software due to increased complexity and memory requirements. However, this might be added in a future version],
+    [Rejected due to increased complexity and memory requirements.],
   ),
-  caption: [Input from amateur satellite community with verdict @reddit-sstv-post],
+  caption: [Input from amateur satellite community from the post to the r/amateursatellites subreddit with author attributions and verdict reached if the input will be included in the software.],
 ) <tab-community-input>
 
-== Requirements
+=== Environmental Constraints
 
-The above constraints and inputs contribute to the following list of requirements.
+Besides the community input, the software should reflect the constraints of a satellite mission as listed in @tab-constraints.
 
 #figure(
   table(
     columns: 2,
     align: left,
-    [*ID*], [*Description*],
+    [*Name*], [*Description*],
 
-    [req00], [The software shall run on the ESP32-P4.],
+    [MCU],
+    [The software runs on an unservicable, memory-constrained microcontroller without and operating system.],
 
-    [req01], [The software shall read an image from the SC850SL RGB camera.],
+    [Cameras], [At least one camera is connected to the microcontroller.],
 
-    [req02], [The software shall read an image from the MI1602 thermal camera.],
+    [Audio], [The audio should be output as a continuous stream of samples.],
 
-    [req03], [The software shall encode the images via Robot 36C.],
+    [Commanding],
+    [The device is connected to a commanding link and commands are transmitted using the #acr("CSP").],
 
-    [req04], [The software shall output the audio samples via I2S.],
+    [Ground Link],
+    [The radio link from the ground station to the satellite is bandwidth constrained.],
+  ),
+  caption: [Constraints for the software from the space environment.],
+) <tab-constraints>
 
-    [req05],
-    [The software shall trigger an #acr("SSTV") transmission if the corresponding command is received.],
+=== General Hardware
 
-    [req06],
-    [If a camera encounters an error, the transmission of its corresponding image shall be skipped while the image of the working camera shall be transmitted.],
+The constraints from @tab-constraints result into the minimal hardware structure shown in @img-ibd-general with the #acr("MCU") and an arbitrary amount of cameras. Leaving the system are two connections, one carrying the #acr("CSP") messages for commands and the other transmits the audio samples using I2S.
 
-    [req07], [The software shall be able to receive firmware updates via UART.],
+#figure(
+  image("../figures/imported/ibd_general.svg", width: 100%),
+  caption: [Internal block diagram of the general system this software is designed for with the #acr("MCU"), a commading and an I2S connection out of the system and an arbitrary number of connected cameras.],
+) <img-ibd-general>
 
-    [req08], [A failed update shall not lead to an unrecoverable state.],
+== Requirements
 
-    [req09],
+Based on the mission context, the requirements on the system were collected in @tab-requirements
+
+#figure(
+  table(
+    columns: 3,
+    align: left,
+    [*Name*], [*Description*], [*Reasoning*],
+
+    [MCU],
+    [The software shall run on the ESP32-P4.],
+    [Unlike the peripherals, the #acr("MCU") can not reasonably be abstracted. The boot process, flash layout and update mechanism are device specific. The ESP32-P4 fits the #acr("SSTV") payload as it includes interfaces for camera and audio control, has a low power draw and enough compute for real-time #acr("SSTV") encoding.],
+
+    [Cameras],
+    [The software shall read the images from all connected cameras.],
+    [Capturing images is the purpose of the payload. Since the number and type of connected cameras changes between missions, the software has to support every connected camera instead of a fixed set.],
+
+    [Encoding],
+    [The software shall encode the images via Robot 36C.],
+    [Based on the community input in @tab-community-input.],
+
+    [Audio],
+    [The software shall output the audio samples via I2S.],
+    [The #acr("SSTV") system does not access the radio hardware itself but transmits the audio signal to the connected system. I2S is a widely supported interface for transmitting audio samples.],
+
+    [Commanding],
+    [The software shall trigger an #acr("SSTV") transmission if the corresponding command has been received.],
+    [Since radio downlinks draw a large amount of power, the #acr("SSTV") payload should only trigger a transmission if the operators deem the conditions favorable.],
+
+    [Camera Failure],
+    [If a camera encounters an error, the transmission of its corresponding image shall be skipped while the image of the working cameras shall be transmitted.],
+    [Since the payload is unservicable after deployment, any hardware error can not be fixed. A fault in a single camera should still allow the rest of the system to function as intended.],
+
+    [Updates],
+    [The software shall be able to receive firmware updates via the commanding link.],
+    [Since the payload is unservicable after deployment, bugs discovered in orbit can only be fixed by replacing the firmware remotely. Updates also allow adding features after launch.],
+
+    [Update Failure],
+    [A failed update shall not lead to an unrecoverable state.],
+    [Ground to space radio links are unreliable. Since the payload is unservicable after deployment, a fault in the update transmitted from the ground can not result in the loss of the #acr("SSTV") payload.],
+
+    [Error Communication],
     [The software shall communicate any recoverable errors to the ground station.],
+    [Debugging requires information about the nature of any error beyond "no #acr("SSTV") signal was received".],
 
-    [req10],
-    [The software shall communicate when an SSTV transmission starts and ends to the payload board.],
+    [Transmission Communication],
+    [The software shall communicate when an SSTV transmission starts and ends.],
+    [The host system routes the audio signal to the radio hardware. Communicating the start and end of a transmission allows it to power the energy-hungry radio devices only while they are actually needed.],
 
-    [req11],
-    [The firmware size shall be small enough to allow transmitting the entire binary within a single overpass.],
+    [Size],
+    [The firmware shall be transmittable over the mission's command link within a single overpass.],
+    [If the firmware can not be transmitted within a single overpass, the update state has to remain across multiple ground station contacts. This introduces additional error paths like the ground station losing track of the last received chunk.],
   ),
   caption: [Requirements for the software],
 ) <tab-requirements>
+
+== MOVE-IIIa Variant
+
+The MOVE-IIIa #acr("SSTV") payload runs a family member of the software described in this thesis where two cameras are connected - one for the visual and one for the infrared color spectrum. Commanding is handled via RS485 which requires the use of a specialized transceiver component. The hardware setup is illustrated in @img-ibd-move-iiia and the pin mapping is shown in <tab-move-iiia-pins>
+
+#figure(
+  image("../figures/imported/ibd_move_iiia.svg", width: 100%),
+  caption: [Internal block diagram of the MOVE-IIIa #acr("SSTV") system with the MCU (ESP32-P4), the RGB Camera (SC850SL), the thermal camera (MI1602) and the RS485 transceiver (THVD1424).],
+) <img-ibd-move-iiia>
+
+#figure(
+  table(
+    columns: 4,
+    align: left,
+    [*GPIO*], [*Connected to*], [*Label*], [*Purpose*],
+    [9], [SC850SL], [SCL], [I2C bus clock],
+    [11], [SC850SL], [SDA], [camera register configuration],
+    [12], [MI1602], [SDA], [Register control],
+    [15], [MI1602], [SCL], [MIPI-CSI bus clock],
+    [20], [I2S], [MCLK], [Master clock],
+    [21], [I2S], [BCLK], [Bit clock],
+    [22], [I2S], [DOUT], [Serial audio sample data],
+    [23], [I2S], [WS], [Word select],
+    [28], [MI1602], [SCLK], [SPI2 clock for frame readout],
+    [29], [MI1602], [MISO], [SPI2 data input],
+    [30], [MI1602], [MOSI], [SPI2 data output],
+    [31], [MI1602], [SSN], [SPI2 slave select],
+    [37], [THVD1424], [RX], [Receives CSP messages from the payload board],
+    [38], [THVD1424], [TX], [Transmits CSP messages to the payload board],
+    [39], [THVD1424], [DE], [Enables sending via RS485. Permanently held high],
+    [54], [SC850SL], [XSHUTDN], [Shutdown / reset],
+  ),
+  caption: [ESP32-P4 pin mapping for the MOVE-IIIa SSTV payload.],
+) <tab-gpio>
