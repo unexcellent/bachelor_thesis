@@ -12,6 +12,17 @@
 #let custom-gray = rgb("#909090")
 #let custom-lightgray = rgb("#A9A9A9")
 
+// Referenceable requirement/constraint names. Wrapping the name cell of a table
+// row in `req(..)` / `constraint(..)` lets the rest of the document reference it
+// as e.g. `@req-camera-failure`, rendered as a link reading "Camera Failure
+// Requirement" (see the `show ref` rule in the thesis template below).
+#let _named-entry(kind, prefix, name) = {
+  let id = prefix + "-" + lower(name).replace(" ", "-")
+  [#name#metadata((name: name, kind: kind))#label(id)]
+}
+#let req(name) = _named-entry("Requirement", "req", name)
+#let constraint(name) = _named-entry("Constraint", "con", name)
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
@@ -219,7 +230,7 @@
   // Every top-level section starts on a new page, except these front-matter
   // sections which are paired onto the preceding section's page (Kurzfassung
   // shares the Abstract page, List of Tables shares the List of Figures page).
-  let paired-front-matter = ([Kurzfassung], [List of Tables])
+  let paired-front-matter = ([Kurzfassung], [List of Tables], [List of Listings])
   show heading.where(level: 1): it => {
     if it.body not in paired-front-matter {
       pagebreak(weak: true)
@@ -227,11 +238,23 @@
     it
   }
 
+  // References to req()/constraint() anchors render as "<Name> <Kind>" links.
+  show ref: it => {
+    let el = it.element
+    if el != none and el.func() == metadata and type(el.value) == dictionary {
+      link(el.location())[#el.value.name #el.value.kind]
+    } else {
+      it
+    }
+  }
+
   // Figures, tables and equations
   set figure(gap: 0.8em)
   // Allow tables and code listings to break across pages.
   show figure.where(kind: table): set block(breakable: true)
   show figure.where(kind: raw): set block(breakable: true)
+  // Code listings are left-aligned instead of centered like other figures.
+  show figure.where(kind: raw): set align(left)
   // Tables have no native corner radius, so draw the outer border on a
   // rounded, clipping block and keep only the inner grid lines on the table.
   set table(stroke: (x, y) => (
@@ -300,6 +323,9 @@
 
   heading(level: 1)[List of Tables]
   outline(title: none, target: figure.where(kind: table))
+
+  heading(level: 1)[List of Listings]
+  outline(title: none, target: figure.where(kind: raw))
 
   if abbreviations != none {
     heading(level: 1)[List of Abbreviations]
