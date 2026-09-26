@@ -10,7 +10,7 @@ These practices only generate an impact on the code base if they are consistentl
 
 == Unit Testing <sec-unit-testing>
 
-Unit testing is the verification of behavior of modules in isolation. It is used to validate the informal interface outside of the scope of the compiler checks. By isolating the modules, hardware can be abstracted to allow the tests to run deterministically on the developer's machine. However, this restricts unit testing to `sstv` and `beacon` since carriers require direct hardware access.
+Unit testing is the verification of behavior of modules in isolation @swebok[p. 5-6]. It is used to validate the informal interface outside of the scope of the compiler checks. By isolating the modules, hardware can be abstracted to allow the tests to run deterministically on the developer's machine. However, this restricts unit testing to `sstv` and `beacon` since carriers require direct hardware access.
 
 === `sstv`
 
@@ -166,7 +166,7 @@ In total, `beacon` has three unit tests for `idle()` and five unit tests for `tr
 
 == Integration Testing <sec-integration-testing>
 
-The integration tests verify the behavior of the carrier firmware as a black-box system. They can therefore only be applied in `beacon-on-moveiiia` and `beacon-on-tab5`. This section only discusses the tests for `beacon-on-moveiiia` since they mostly match the ones in `beacon-on-tab5` and @sec-verify-modularity goes further into details on the `beacon-on-tab5` implementation.
+The integration tests verify the behavior of the carrier firmware as a black-box system @swebok[p. 5-7]. They can therefore only be applied in `beacon-on-moveiiia` and `beacon-on-tab5`. This section only discusses the tests for `beacon-on-moveiiia` since they mostly match the ones in `beacon-on-tab5` and @sec-verify-modularity goes further into details on the `beacon-on-tab5` implementation.
 
 The hardware for verifying the `beacon-on-moveiiia` carrier was deliberately set up isolated from the rest of the satellite to reduce the variables and make the setup replicable. A Raspberry Pi was chosen to mock all external interfaces. It provides the CSP message link through a USB to RS485 adapter and receives the audio samples via I2S. @img-test-setup shows the exact setup, while @tbl-test-wiring shows how the test setup is wired.
 

@@ -82,7 +82,7 @@ Based on the mission context, the requirements on the system were collected in @
 
     [#req("MCU")],
     [The software shall run on the ESP32-P4.],
-    [Unlike the peripherals, the #acr("MCU") can not reasonably be abstracted. The boot process, flash layout and update mechanism are device specific. The ESP32-P4 fits the #acr("SSTV") payload as it includes interfaces for camera and audio control, has a low power draw and enough compute for real-time #acr("SSTV") encoding.],
+    [Unlike the peripherals, the #acr("MCU") can not reasonably be abstracted. The boot process, flash layout and update mechanism are device specific. The ESP32-P4 fits the #acr("SSTV") payload as it includes interfaces for camera and audio control, has a low power draw @esp32p4-datasheet[Sec. 5.6] and enough compute for real-time #acr("SSTV") encoding @esp32p4-datasheet[Features].],
 
     [#req("Cameras")],
     [The software shall read the images from all connected cameras.],
@@ -94,7 +94,7 @@ Based on the mission context, the requirements on the system were collected in @
 
     [#req("Audio")],
     [The software shall output the audio samples via I2S.],
-    [The #acr("SSTV") system does not access the radio hardware itself but transmits the audio signal to the connected system. I2S is a widely supported interface for transmitting audio samples.],
+    [The #acr("SSTV") system does not access the radio hardware itself but transmits the audio signal to the connected system. I2S is a widely supported interface for transmitting audio samples @nxp-i2s.],
 
     [#req("Commanding")],
     [The software shall trigger an #acr("SSTV") transmission if the corresponding command has been received.],
@@ -129,7 +129,7 @@ Based on the mission context, the requirements on the system were collected in @
 
 == MOVE-IIIa Carrier
 
-The MOVE-IIIa #acr("SSTV") payload runs a family member of the software described in this thesis where two cameras are connected - one for the visual and one for the infrared color spectrum. Commanding is handled via RS485 which requires the use of a specialized transceiver component. The hardware setup is illustrated in @img-ibd-move-iiia and the pin mapping is shown in <tab-move-iiia-pins>
+The MOVE-IIIa #acr("SSTV") payload runs a family member of the software described in this thesis where two cameras are connected - one for the visual and one for the infrared color spectrum. Commanding is handled via RS485 which requires the use of a specialized transceiver component. The hardware setup is illustrated in @img-ibd-move-iiia and the pin mapping is shown in @tab-gpio.
 
 #figure(
   image("../figures/imported/ibd_move_iiia.svg", width: 100%),

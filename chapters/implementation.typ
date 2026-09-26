@@ -67,7 +67,10 @@ To keep the decision objective, the language was selected through a weighted-cri
     [3 @rust-on-esp],
     [3 @micropython],
 
-    [Error handling & concurrency], [2], [5 @rust-book], [3],
+    [Error handling & concurrency],
+    [2 @rubio2009errorprop],
+    [5 @rust-book],
+    [3 @micropython-isr],
 
     [*Weighted total*], [*3.65*], [*4.50*], [*2.70*],
   ),
