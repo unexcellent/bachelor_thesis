@@ -117,7 +117,7 @@ The commanding is used to control the SSTV system via the RS485 link to the payl
 
 == Software Architecture
 
-To maximise the value this thesis provides to the #acr("SSTV") community, it was decided to split the resulting software into multiple packages (also called crates in the Rust ecosystem) where each crate targets a different user group. The crates are depicted in @img-pkg-software.
+To maximise the value this thesis provides to the #acr("SSTV") community, it was decided to split the resulting software into multiple packages (also called crates in the Rust ecosystem) where each crate targets a different user group. The crates are depicted in @img-pkg-software and their links are listed in @tab-digital-appendix.
 
 #figure(
   image("../figures/imported/pkg_software.svg", width: 100%),
