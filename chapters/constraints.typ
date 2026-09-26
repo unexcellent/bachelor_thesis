@@ -46,9 +46,11 @@ Besides the community input, the software should reflect the constraints of a sa
     [#constraint("MCU")],
     [The software runs on an unservicable, memory-constrained microcontroller without and operating system.],
 
-    [#constraint("Cameras")], [At least one camera is connected to the microcontroller.],
+    [#constraint("Cameras")],
+    [At least one camera is connected to the microcontroller.],
 
-    [#constraint("Audio")], [The audio should be output as a continuous stream of samples.],
+    [#constraint("Audio")],
+    [The audio should be output as a continuous stream of samples.],
 
     [#constraint("Commanding")],
     [The device is connected to a commanding link and commands are transmitted using the #acr("CSP").],
@@ -74,7 +76,7 @@ Based on the mission context, the requirements on the system were collected in @
 
 #figure(
   table(
-    columns: 3,
+    columns: (3.5cm, auto, auto),
     align: left,
     [*Name*], [*Description*], [*Reasoning*],
 
@@ -119,13 +121,13 @@ Based on the mission context, the requirements on the system were collected in @
     [The host system routes the audio signal to the radio hardware. Communicating the start and end of a transmission allows it to power the energy-hungry radio devices only while they are actually needed.],
 
     [#req("Size")],
-    [The firmware shall be transmittable over the mission's command link within a single overpass.],
-    [If the firmware can not be transmitted within a single overpass, the update state has to remain across multiple ground station contacts. This introduces additional error paths like the ground station losing track of the last received chunk.],
+    [All bytes transmitted for an update shall less than 790.21 kB],
+    [If the firmware can not be transmitted within a single overpass, the update state has to remain across multiple ground station contacts. This introduces additional error paths like the ground station losing track of the last received chunk. 790.21 kB is 50% of the data volume available for uplink on MOVE-IIIa via #acr("UHF") on an average overpass @move-iiia-cdr[p.~10] giving it a sizable margin for error. Since this calculation is based on a #acr("UHF") link and satellite mission increasingly move to bands with higher data rates (such as S-band, X-band and Ka-band) @nasa-soa[p.~248], this is considered a reasonable assumption for other missions implementing this software.],
   ),
   caption: [Requirements for the software],
 ) <tab-requirements>
 
-== MOVE-IIIa Variant
+== MOVE-IIIa Carrier
 
 The MOVE-IIIa #acr("SSTV") payload runs a family member of the software described in this thesis where two cameras are connected - one for the visual and one for the infrared color spectrum. Commanding is handled via RS485 which requires the use of a specialized transceiver component. The hardware setup is illustrated in @img-ibd-move-iiia and the pin mapping is shown in <tab-move-iiia-pins>
 

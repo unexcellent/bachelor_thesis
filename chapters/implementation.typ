@@ -148,7 +148,7 @@ The encoding pipeline consumes an iterator of `RgbPixel` into the `Encoder` stru
 #figure(
   ```rust
   let pixels = ...; // source of the image as an iterator over each pixel
-  let encoder = Encoder::new(Mode::Robot36, pixels)?;
+  let encoder = Encoder::new(ROBOT_36, pixels)?;
   for sample in Synthesizer::new(encoder, SAMPLE_RATE) {
       ... // output of each sample
   }
@@ -163,7 +163,7 @@ The `Encoder` itself only ever buffers two rows of 320 `RgbPixel` each which con
   caption: [Activity diagram of the `Encoder` in the `sstv` crate.],
 ) <img-act-encoder>
 
-== `beacon` Crate Implemenation <sec-beacon-architecture>
+== `beacon` Crate Implemenation
 
 `beacon` implements the runtime behavior of the #acr("SSTV") payload while leaving the hardware access to the carrier. At runtime, the firmware moves through a fixed set of states as depicted in @img-stm-sstv-system.
 
@@ -178,7 +178,7 @@ As per the @req-error-communication, errors should be downlinked. Rust's `Result
 
 The states are entered through the three public functions `idle()`, `transmit_sstv()` and `update()`. Exposing `idle()` alone would be sufficient since it contains the control flow dispatching into the other two states. However, the underlying functions are deliberately public as well. This lets carriers choose to reuse a single behavior such as the #acr("SSTV") transmission while implementing their own control flow around it.
 
-=== Hardware Abstraction
+=== Hardware Abstraction <sec-hardware-abstraction>
 
 The Rust compiler requires carriers to use traits in order to use custom hardware abstractions in the functions provided by `beacon`. These traits represent the formal interface expected by those functions in order to use the hardware. Traits need to be implemented by a struct and define all methods along with their arguments and return types. They can also define a default implementation of a method which can optionally be overwritten by the implementer. One trait is defined in `beacon` for every type of hardware.
 
