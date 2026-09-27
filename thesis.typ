@@ -15,13 +15,13 @@
 // List of Abbreviations in the front matter. Keep alphabetically sorted.
 #let abbreviations = (
   "ARISS": "Amateur Radio on the International Space Station",
-  "CSP": "Cubesat Space Protocol",
+  "CSP": "CubeSat Space Protocol",
   "FM": "Frequency Modulation",
   "MCU": "Microcontroller Unit",
   "MOVE": "Munich Orbital Verification Experiment",
   "SSTV": "Slow-Scan Television",
   "UHF": "Ultra High Frequency",
-  "VIS": "Visual Interval Signaling",
+  "VIS": "Vertical Interval Signaling",
 )
 #init-acronyms(abbreviations)
 

@@ -4,17 +4,17 @@
 
 == Quality Assurance
 
-Software engineering offers some common practices for increasing high quality code throughout a project. One of these practices is the usage of formatters and linters. As the name implies, the formatter automatically aligns the formatting for all files with the style guide @rustfmt. Linters perform static code analysis to catch common code mistakes, increase performance or enforce rules @clippy. Rust's default formatter `rustfmt` and linter `clippy` are both used in all repositories. `sstv` even uses `clippy` to guarentee the program has no run time paths that could lead to a program crash.
+Software engineering offers some common practices for improving code quality throughout a project. One of these practices is the use of formatters and linters. A formatter automatically aligns the formatting for all files with the style guide @rustfmt. Linters perform static code analysis to catch common code mistakes, increase performance or enforce rules @clippy. Rust's default formatter `rustfmt` and linter `clippy` are both used in all repositories. `sstv` even uses `clippy` to guarantee the program has no runtime paths that could lead to a program crash.
 
-These practices only generate an impact on the code base if they are consistently enforced. For that reason, all crates use `pre-commit`. This tool installs a hook into the respecive `git` repositories triggering before every single commit. `pre-commit` then runs `rustfmt`, `clippy`, the unit tests (see @sec-unit-testing) and other checks. If a single one of those checks fail, the commit is aborted, forcing the developer to address the issues before adding their changes to the `git` history. If the developer does not have `pre-commit` installed locally, a GitHub Action catches the issues and sensd out an automatic email communicating the failure. While these measures raise the bar for contributing to the repositories, they prevent low quality and faulty code from entering the `git` history in the first place, ensuring that reverting to any commit yields safe state.
+These practices only have an impact on the code base if they are consistently enforced. For that reason, all crates use `pre-commit`. This tool installs a hook into the respective `git` repositories that runs before every commit. `pre-commit` then runs `rustfmt`, `clippy`, the unit tests (see @sec-unit-testing) and other checks. If any of those checks fails, the commit is aborted, forcing the developer to address the issues before adding their changes to the `git` history. If the developer does not have `pre-commit` installed locally, a GitHub Action catches the issues and sends out an automatic email communicating the failure. While these measures raise the bar for contributing to the repositories, they prevent low-quality and faulty code from entering the `git` history in the first place, ensuring that reverting to any commit yields a safe state.
 
 == Unit Testing <sec-unit-testing>
 
-Unit testing is the verification of behavior of modules in isolation @swebok[p. 5-6]. It is used to validate the informal interface outside of the scope of the compiler checks. By isolating the modules, hardware can be abstracted to allow the tests to run deterministically on the developer's machine. However, this restricts unit testing to `sstv` and `beacon` since carriers require direct hardware access.
+Unit testing is the verification of the behaviour of modules in isolation @swebok[p.~5-6]. It is used to validate the informal interface outside the scope of the compiler checks. By isolating the modules, hardware can be abstracted to allow the tests to run deterministically on the developer's machine. However, this restricts unit testing to `sstv` and `beacon` since carriers require direct hardware access.
 
 === `sstv`
 
-Testing in the `sstv` crate fundamentally verifies that the tones from the Dayton paper @daytona-paper are correctly emitted. Each mode in `sstv` is defined as a sequence os steps which are either fixed control tones or scans of a color channel. A single mistake in any of these steps would shift the timing of the entire transmission and prevent a receiver from decoding the image. The test in @list-test-robot36-mode therefore checks the duration of the transmission against the values in the paper.
+Testing in the `sstv` crate fundamentally verifies that the tones from the Dayton paper @daytona-paper are correctly emitted. Each mode in `sstv` is defined as a sequence of steps which are either fixed control tones or scans of a colour channel. A single mistake in any of these steps would shift the timing of the entire transmission and prevent a receiver from decoding the image. The test in @list-test-robot36-mode therefore checks the duration of the transmission against the value in the paper.
 
 #figure(
   ```rust
@@ -30,7 +30,7 @@ Testing in the `sstv` crate fundamentally verifies that the tones from the Dayto
   caption: [The `transmission_time_matches_the_paper()` test in `sstv` which verifies that the total transmission time matches the value defined in the Dayton paper.],
 ) <list-test-robot36-mode>
 
-@list-test-shared-pair verifies that the `Encoder` averages the color differences of the two buffered rows correctly.
+@list-test-shared-pair verifies that the `Encoder` averages the colour differences of the two buffered rows correctly.
 
 #figure(
   ```rust
@@ -47,10 +47,10 @@ Testing in the `sstv` crate fundamentally verifies that the tones from the Dayto
       assert_eq!(lines.value(0, Channel::BY), blue_average);
   }
   ```,
-  caption: [The `shared_pair_colour_differences_average_both_rows()` unit test in `sstv` verifying the averaging of the color differences over a line pair.],
+  caption: [The `shared_pair_colour_differences_average_both_rows()` unit test in `sstv` verifying the averaging of the colour differences over a line pair.],
 ) <list-test-shared-pair>
 
-The remaining stages of the encoding path are tested similarly. The conversion from RGB to YUV is compared against precomputed values, every pixel value has to map linearly onto the frequency range between black (1500 Hz) and white (2300 Hz) and the header has to consist of the VOX tones, the leader tones and the #acr("VIS") code of Robot 36. The `Encoder` itself is tested for ending the transmission early if the image is truncated. Finally, the `Synthesizer` is compared against a floating point sine wave reference to ensure that the generated audio samples do not deviate from the ideal signal as can be seen in @list-test-synthesizer.
+The remaining stages of the encoding path are tested similarly. The conversion from RGB to YUV is compared against precomputed values, every pixel value has to map linearly onto the frequency range between black (1500 Hz) and white (2300 Hz) and the header has to consist of the VOX tones, the leader tones and the #acr("VIS") code of Robot 36. The `Encoder` itself is tested for ending the transmission early if the image is truncated. Finally, the `Synthesizer` is compared against a floating-point sine wave reference to ensure that the generated audio samples do not deviate from the ideal signal as can be seen in @list-test-synthesizer.
 
 #figure(
   ```rust
@@ -83,14 +83,14 @@ The remaining stages of the encoding path are tested similarly. The conversion f
       assert!(max_difference <= max_reference_sample / 50);
   }
   ```,
-  caption: [The `synthesizer_matches_pure_sine_wave()` unit test in `sstv` verifying the generated audio samples against a floating point reference.],
+  caption: [The `synthesizer_matches_pure_sine_wave()` unit test in `sstv` verifying the generated audio samples against a floating-point reference.],
 ) <list-test-synthesizer>
 
-In total, 25 tests cover the Robot 36 encoding path which all pass.
+In total, 25 tests cover the Robot 36 encoding path, all of which pass.
 
 === `beacon`
 
-Unit testing in `beacon` reveals another benefit of modular programming. The traits, that have been defined in @sec-hardware-abstraction can be used to implement mock hardware. The unit tests in `beacon` define `FakeCamera`, `FakeAudio` and `FakeLink`. Each implement the same public methods that any real device would, but only log what methods are called and emit dummy data if requested as can be seen in @list-fake-camera.
+Unit testing in `beacon` reveals another benefit of modular programming. The traits defined in @sec-hardware-abstraction can be used to implement mock hardware. The unit tests in `beacon` define `FakeCamera`, `FakeAudio` and `FakeLink`. Each implements the same public methods that any real device would, but only log which methods are called and emit dummy data if requested as can be seen in @list-fake-camera.
 
 #figure(
   ```rust
@@ -115,7 +115,7 @@ Unit testing in `beacon` reveals another benefit of modular programming. The tra
   caption: [The `FakeCamera` struct and its implementation of `Camera` in `beacon`. The code was slightly restructured for readability while remaining functionally identical to the actual implementation.],
 ) <list-fake-camera>
 
-The mock devices can then be used in the tests to check the behavior as seen in @list-test-transmit-sstv.
+The mock devices can then be used in the tests to check the behaviour as seen in @list-test-transmit-sstv.
 
 #figure(
   ```rust
@@ -137,7 +137,7 @@ The mock devices can then be used in the tests to check the behavior as seen in 
   caption: [The `single_camera_captures_then_encodes_and_flushes_once()` unit test in `beacon` verifying a successful transmission with a single working `FakeCamera`.],
 ) <list-test-transmit-sstv>
 
-Other tests can then verify if combinations of working and non-working cameras behave as expected as the test in @list-test-transmit-sstv-non-working illustrates.
+Other tests can then verify whether combinations of working and non-working cameras behave as expected, as the test in @list-test-transmit-sstv-non-working illustrates.
 
 #figure(
   ```rust
@@ -162,17 +162,17 @@ Other tests can then verify if combinations of working and non-working cameras b
   caption: [The `empty_slots_are_skipped()` unit test in `beacon` verifying that only working cameras transmit an image.],
 ) <list-test-transmit-sstv-non-working>
 
-In total, `beacon` has three unit tests for `idle()` and five unit tests for `transmit_sstv()` which all pass. Testing the update mechanism is inherently more hardware-bound which is why it is verified in @sec-integration-testing.
+In total, `beacon` has three unit tests for `idle()` and five unit tests for `transmit_sstv()`, all of which pass. Testing the update mechanism is inherently more hardware-bound, which is why it is verified in @sec-integration-testing.
 
 == Integration Testing <sec-integration-testing>
 
-The integration tests verify the behavior of the carrier firmware as a black-box system @swebok[p. 5-7]. They can therefore only be applied in `beacon-on-moveiiia` and `beacon-on-tab5`. This section only discusses the tests for `beacon-on-moveiiia` since they mostly match the ones in `beacon-on-tab5` and @sec-verify-modularity goes further into details on the `beacon-on-tab5` implementation.
+The integration tests verify the behaviour of the carrier firmware as a black-box system @swebok[p.~5-7]. They can therefore only be applied to `beacon-on-moveiiia` and `beacon-on-tab5`. This section only discusses the tests for `beacon-on-moveiiia` since they mostly match the ones in `beacon-on-tab5` and @sec-verify-modularity goes into further detail on the `beacon-on-tab5` implementation.
 
-The hardware for verifying the `beacon-on-moveiiia` carrier was deliberately set up isolated from the rest of the satellite to reduce the variables and make the setup replicable. A Raspberry Pi was chosen to mock all external interfaces. It provides the CSP message link through a USB to RS422 adapter and receives the audio samples via I2S. @img-test-setup shows the exact setup, while @tbl-test-wiring shows how the test setup is wired.
+The hardware for verifying the `beacon-on-moveiiia` carrier was deliberately set up in isolation from the rest of the satellite to reduce the number of variables and make the setup replicable. A Raspberry Pi was chosen to mock all external interfaces. It provides the CSP message link through a USB-to-RS422 adapter and receives the audio samples via I2S. @img-test-setup shows the exact setup, while @tbl-test-wiring lists the wiring.
 
 #figure(
   image("../figures/test-setup.jpg", width: 60%),
-  caption: [Hardware setup for the verification with a Raspberry Pi 4B (1), a DSD TECH SH-U11 (2) and the SSTV system (3)],
+  caption: [Hardware setup for the verification with a Raspberry Pi 4B (1), a DSD TECH SH-U11 (2) and the SSTV system (3).],
 ) <img-test-setup>
 
 #figure(
@@ -192,10 +192,10 @@ The hardware for verifying the `beacon-on-moveiiia` carrier was deliberately set
     [THVD1424], [RX+], [DSD TECH SH-U11], [TX+],
     [THVD1424], [RX-], [DSD TECH SH-U11], [TX-],
   ),
-  caption: [Pin wiring for the test setup],
+  caption: [Pin wiring for the test setup.],
 ) <tbl-test-wiring>
 
-Rather than testing the firmware behavior manually, automatic software tests were written in the `tests` directory of the `beacon-on-moveiiia` repository. The tests send the commands required to trigger the behavior and then check the system response against the expected output. Since some tests simulate camera failure cases, a compile flag was introduced that disables either of the cameras in the software.
+Rather than testing the firmware behaviour manually, automated tests were written in the `tests` directory of the `beacon-on-moveiiia` repository. The tests send the commands required to trigger the behaviour and then check the system response against the expected output. Since some tests simulate camera failure cases, a compile flag was introduced that disables either of the cameras in the software.
 
 Python was chosen for the integration tests because it requires no compilation step on the Raspberry Pi and already provides libraries for the serial link and image analysis. The decoding is done via the Python bindings of `sstv`#footnote("https://pypi.org/project/sstv").
 
@@ -215,12 +215,12 @@ The transmission test verifies the main functionality of the firmware by trigger
       assert_valid_image(thermal, min_std=5.0, min_smoothness=0.35)
       assert_gap_between_images(samples, rate, seconds=5.0)
   ```,
-  caption: [The `test_both_cameras_transmitting()` test in `beacon-on-moveiiia` verifying transmission if both cameras work as expected.],
+  caption: [The `test_both_cameras_transmitting()` test in `beacon-on-moveiiia` verifying transmission when both cameras work as expected.],
 ) <list-test-both-cameras>
 
-=== RGB Only Transmission <sec-test-rgb-only>
+=== RGB-Only Transmission <sec-test-rgb-only>
 
-This test is supposed to verify the firmware behaves correctly in the case that only the RGB camera is working. Therefore, a firmware version is flashed where a failed thermal camera initialization is simulated. @list-test-rgb-only shows the testing sequence.
+This test verifies that the firmware behaves correctly when only the RGB camera is working. Therefore, a firmware version is flashed where a failed thermal camera initialization is simulated. @list-test-rgb-only shows the testing sequence.
 
 #figure(
   ```python
@@ -229,12 +229,12 @@ This test is supposed to verify the firmware behaves correctly in the case that 
     image = capture_and_decode(board)
     assert_valid_image(image, min_std=6.0, min_smoothness=0.35)
   ```,
-  caption: [The `test_rgb_only_transmission()` test in `beacon-on-moveiiia` verifying transmission behavior if only the RGB camera is working.],
+  caption: [The `test_rgb_only_transmission()` test in `beacon-on-moveiiia` verifying transmission behaviour when only the RGB camera is working.],
 ) <list-test-rgb-only>
 
-=== Thermal Only Transmission <sec-test-thermal-only>
+=== Thermal-Only Transmission <sec-test-thermal-only>
 
-The test covering the scenario that only the thermal camera is working is identical to the RGB only transmission test other than the fact that flashed software has the RGB camera disabled instead of the thermal camera.
+The test covering the scenario that only the thermal camera is working is identical to the RGB-only transmission test, except that the flashed firmware has the RGB camera disabled instead of the thermal camera.
 
 === Busy and Available Messages <sec-test-busy-available>
 
@@ -250,7 +250,7 @@ This test verifies that the SSTV system communicates the start and end of a tran
   caption: [The `test_sstv_busy_available()` test in `beacon-on-moveiiia` verifying that the carrier notifies the devices on the commanding link that an SSTV transmission is ongoing.],
 ) <list-test-busy-available>
 
-=== Update Successfully <sec-test-update-successful>
+=== Successful Update <sec-test-update-successful>
 
 This test verifies that the device can receive updates via the command link and runs the new firmware after the update sequence was successfully performed. The sequence is shown in @list-test-update-successful.
 
@@ -274,7 +274,7 @@ The test is considered successful if a boot info message is received by the Rasp
 
 === Update Incomplete <sec-test-update-incomplete>
 
-To test if the device recovers if an incomplete update is transmitted, a full update is announced but only a single firmware chunk is transmitted before the update end command is sent. The test is passed if the SSTV system transmitts an UpdateIncomplete error (see @list-test-update-incomplete).
+To test whether the device recovers when an incomplete update is transmitted, a full update is announced but only a single firmware chunk is transmitted before the update end command is sent. The test is passed if the SSTV system transmitts an UpdateIncomplete error (see @list-test-update-incomplete).
 
 #figure(
   ```python
@@ -294,7 +294,7 @@ To test if the device recovers if an incomplete update is transmitted, a full up
 
 === Update Corrupt <sec-test-update-corrupt>
 
-To test how the SSTV system reacts when an unbootable update is received, the compiled firmware is truncated at the end. The new shortened length of the firmware is then announced and after sending the update chunks and end command, the test succeeds if the SSTV system returns an UpdateCorrupt message as shown in @list-test-update-corrupt.
+To test how the SSTV system reacts when an unbootable update is received, the compiled firmware is truncated at the end. The shortened length of the firmware is then announced and after the update chunks and the end command have been sent, the test succeeds if the SSTV system returns an UpdateCorrupt message as shown in @list-test-update-corrupt.
 
 #figure(
   ```python
@@ -314,7 +314,7 @@ To test how the SSTV system reacts when an unbootable update is received, the co
 
 === Update Chunk Incomplete <sec-test-update-chunk-incomplete>
 
-In the case that part of a chunk is missing, the firmware is supposed to transmit an UpdateChunkIncomplete message. To test this, only part of the first update chunk is transmitted as can be seen in @list-test-update-chunk-incomplete.
+If part of a chunk is missing, the firmware is supposed to transmit an UpdateChunkIncomplete message. To test this, only part of the first update chunk is transmitted as can be seen in @list-test-update-chunk-incomplete.
 
 #figure(
   ```python
@@ -331,7 +331,7 @@ In the case that part of a chunk is missing, the firmware is supposed to transmi
 
 === Update Data Before Begin <sec-test-update-data-before-begin>
 
-To test that the device rejects update chunks arriving before an update was started, a chunk is transmitted directly after the update announcement without the begin command. The test is passed if the SSTV system transmits an UpdateNotInProgress error (see @list-test-update-data-before-begin).
+To test that the device rejects update chunks arriving before an update has been started, a chunk is transmitted directly after the update announcement without the begin command. The test is passed if the SSTV system transmits an UpdateNotInProgress error (see @list-test-update-data-before-begin).
 
 #figure(
   ```python
@@ -347,7 +347,7 @@ To test that the device rejects update chunks arriving before an update was star
 
 === Update End Before Begin <sec-test-update-end-before-begin>
 
-This test is identical to the previous one other than the fact that the end command is sent instead of an update chunk. The expected response is again an UpdateNotInProgress error as shown in @list-test-update-end-before-begin.
+This test is identical to the previous one, except that the end command is sent instead of an update chunk. The expected response is again an UpdateNotInProgress error as shown in @list-test-update-end-before-begin.
 
 #figure(
   ```python
@@ -395,7 +395,7 @@ The size of the compiled `beacon-on-moveiiia` binary can be obtained by running 
   caption: [Commands used to determine the `beacon-on-moveiiia` firmware size via a UNIX shell.],
 ) <list-size-commands>
 
-Running these commands outputs a size of 385.92 kB. The full update is then split into 3015 chunks, each of which with a size of 128 bytes. A number of non-firmware bytes are then added to each chunk from the various communication channels the update is transmitted through which are detailed in @tab-update-chunks.
+Running these commands outputs a size of 385.92 kB. The full update is then split into 3015 chunks, each 128 bytes in size. Each communication layer the update passes through adds overhead bytes to every chunk, as detailed in @tab-update-chunks.
 
 #figure(
   table(
@@ -415,22 +415,22 @@ Running these commands outputs a size of 385.92 kB. The full update is then spli
 
     [Reed-Solomon], [32], [From @gomspace-ax100-manual[p.~28]],
 
-    [Golay-Length], [3], [From @gomspace-ax100-manual[p.~27]],
+    [Golay length], [3], [From @gomspace-ax100-manual[p.~27]],
 
     [Interframe Fill],
     [50],
-    [`intfrmln`@gomspace-ax100-manual[p.~12] value chosen by MOVE-IIIa],
+    [`intfrmln` @gomspace-ax100-manual[p.~12] value chosen by MOVE-IIIa],
 
     [*Total bytes per chunk*], [*228*], [],
   ),
   caption: [Byte overhead breakdown of each update chunk.],
 ) <tab-update-chunks>
 
-With the total size of each chunk we can obtain the total size of the transmitted update as $3015 times 228 "B" = 687.42 "kB"$.
+With the total size of each chunk, the total size of the transmitted update is $3015 times 228 "B" = 687.42 "kB"$.
 
 == Requirement Verification
 
-With the above sections, a verdict can be reached in @tab-requirement-verification whether each requirement has been fulfilled by the system.
+Based on the above sections, @tab-requirement-verification states whether each requirement has been fulfilled by the system.
 
 #figure(
   table(
@@ -440,7 +440,7 @@ With the above sections, a verdict can be reached in @tab-requirement-verificati
 
     [MCU],
     [Passed],
-    [The fact that any of the integration tests pass, validates this requirement.],
+    [The fact that the integration tests pass on the ESP32-P4 validates this requirement.],
 
     [Cameras],
     [Passed],
@@ -480,20 +480,20 @@ With the above sections, a verdict can be reached in @tab-requirement-verificati
 
     [Size],
     [Passed],
-    [The 687.42 kB calculated in @sec-size are smaller than the 790.21 kB listed in the requirement.],
+    [The 687.42 kB calculated in @sec-size is smaller than the 790.21 kB listed in the requirement.],
   ),
-  caption: [Verdict about each requirement if it was passed and reasoning given.],
+  caption: [Verification verdict and reasoning for each requirement.],
 ) <tab-requirement-verification>
 
 == Modularity <sec-verify-modularity>
 
-Since `beacon-on-moveiiia` already imports `beacon`, it could be argued that the SSTV system itself validates the modularity of `beacon`. However, both crates were developed alongside each other for the same hardware. Any decision about the hardware that accidentally leaked into `beacon` would therefore go unnoticed because `beacon-on-moveiiia` implements it anyway. Only a second carrier with different hardware can therefore verify the software's modularity.
+Since `beacon-on-moveiiia` already imports `beacon`, it could be argued that the SSTV system itself validates the modularity of `beacon`. However, both crates were developed alongside each other for the same hardware. Any decision about the hardware that accidentally leaked into `beacon` would therefore go unnoticed because `beacon-on-moveiiia` implements it anyway. Only a second carrier with different hardware can verify the software's modularity.
 
 For this purpose, the M5Stack Tab5 IoT Development Kit (from here on referred to as the Tab5) was chosen. The Tab5 is powered by an ESP32-P4 and has a builtin RGB camera (the SC2356) and speaker (driven by the NS4150B audio amplifier). These are notably distinct from the devices used in `beacon-on-moveiiia` and therefore require a custom carrier.
 
-The carrier itself is implemented in `beacon-on-tab5` which copies all of the integration tests, except for those requiring a thermal camera. Instead of a Raspberry Pi, the tests are executed on a laptop with the microphone used for image decoding and the USB-C port on the Tab5 for commanding.
+The carrier itself is implemented in `beacon-on-tab5` which adopts all of the integration tests, except for those requiring a thermal camera. Instead of a Raspberry Pi, the tests are executed on a laptop with the microphone used for image decoding and the USB-C port on the Tab5 for commanding.
 
-After implementing the hardware abstraction for the new devices, the integration into the firmware was remarkably similar compared to `beacon-on-moveiiia`. @list-main-comparison shows the `main` functions of both firmwares side by side.
+After implementing the hardware abstraction for the new devices, the integration into the firmware was remarkably similar to `beacon-on-moveiiia`. @list-main-comparison shows the `main` functions of both firmware images side by side.
 
 #figure(
   grid(
@@ -577,6 +577,6 @@ Since all of the copied tests pass, `beacon` can be considered modular. @img-tab
 
 #figure(
   image("../figures/tab5-decoding.jpg", width: 60%),
-  caption: [Showcase of how the SSTV transmission from the Tab5 can be decoded.],
+  caption: [SSTV transmission from the Tab5 decoded on a smartphone.],
 ) <img-tab5-decoding>
 
