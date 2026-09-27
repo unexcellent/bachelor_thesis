@@ -17,12 +17,10 @@
   "ARISS": "Amateur Radio on the International Space Station",
   "CSP": "Cubesat Space Protocol",
   "FM": "Frequency Modulation",
-  "GMSK": "Gaussian Minimum Shift Keying",
   "MCU": "Microcontroller Unit",
   "MOVE": "Munich Orbital Verification Experiment",
   "SSTV": "Slow-Scan Television",
   "UHF": "Ultra High Frequency",
-  "VHF": "Very High Frequency",
   "VIS": "Visual Interval Signaling",
 )
 #init-acronyms(abbreviations)

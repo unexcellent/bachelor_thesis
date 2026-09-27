@@ -18,14 +18,14 @@ VIS_CODE = [
     (10, 1200, "Break (10ms)", None),
     (300, 1900, "Leader (300ms)", None),
     (30, 1200, "Start (30ms)", None),
-    (30, 1100, None, "0"),
-    (30, 1100, None, "0"),
-    (30, 1100, None, "0"),
-    (30, 1300, None, "1"),
-    (30, 1100, None, "0"),
-    (30, 1100, None, "0"),
-    (30, 1100, None, "0"),
-    (30, 1300, None, "1"),
+    (30, 1300, None, "0"),
+    (30, 1300, None, "0"),
+    (30, 1300, None, "0"),
+    (30, 1100, None, "1"),
+    (30, 1300, None, "0"),
+    (30, 1300, None, "0"),
+    (30, 1300, None, "0"),
+    (30, 1100, None, "1"),
     (30, 1200, "Stop (30ms)", None),
 ]
 
@@ -40,8 +40,14 @@ for i, (duration, freq, label, bit) in enumerate(VIS_CODE):
     center = t + duration / 2
     if label is not None:
         ax.text(
-            center, 2560, label, ha="center", va="top",
-            fontsize=9, color=MUTED, rotation=90 if duration < 100 else 0,
+            center,
+            2560,
+            label,
+            ha="center",
+            va="top",
+            fontsize=9,
+            color=MUTED,
+            rotation=90 if duration < 100 else 0,
             bbox=dict(facecolor="white", edgecolor="none", pad=1.5),
         )
     if bit is not None:

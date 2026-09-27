@@ -24,7 +24,7 @@ To keep the decision objective, the language was selected through a weighted-cri
 
     [Runtime performance],
     [0.20],
-    [Robot 36C encoding (@req-encoding) and the continuous I2S sample output (@req-audio) are soft-real-time and must not fall behind.],
+    [Robot 36 encoding (@req-encoding) and the continuous I2S sample output (@req-audio) are soft-real-time and must not fall behind.],
 
     [Memory & flash footprint],
     [0.20],
@@ -81,7 +81,7 @@ With a weighted total of 4.50, Rust was chosen for the firmware. MicroPython is 
 
 == Commands
 
-The commanding is used to control the SSTV system via the RS485 link to the payload board. Commands are encoded as #acr("CSP") messages and can originate from any board on the satellite bus or the ground station. The commands were originally specified for the MOVE-IIIa mission. However, `beacon` defines them for all carriers since its functions can only implement the entire control flow if the commands are known in advance. Because no command contains any MOVE-IIIa specific behavior, the set could be adopted for the whole software family. Only the transport of the commands is left to the carrier.
+The commanding is used to control the SSTV system via the RS422 link to the payload board. Commands are encoded as #acr("CSP") messages and can originate from any board on the satellite bus or the ground station. The commands were originally specified for the MOVE-IIIa mission. However, `beacon` defines them for all carriers since its functions can only implement the entire control flow if the commands are known in advance. Because no command contains any MOVE-IIIa specific behavior, the set could be adopted for the whole software family. Only the transport of the commands is left to the carrier.
 
 #figure(
   table(
@@ -127,7 +127,7 @@ To maximise the value this thesis provides to the #acr("SSTV") community, it was
   caption: [Package diagram for the SSTV system depicting the relationship between `sstv`, `beacon`, `beacon-on-moveiiia` and `beacon-on-tab5`.],
 ) <img-pkg-software>
 
-The `sstv` crate isolates pure encoding and decoding functionality without any dependence on the specific hardware running the algorithms. In fact, the goal of the crate is to be maximally hardware agnostic to ensure compatibility with a wide array of systems. Beyond the Robot 36C mode required by this thesis, it implements most other modes from the Dayton paper @daytona-paper, supports decoding as well as encoding and has been published to Rust's default package registry crates.io#footnote("https://crates.io/crates/sstv"). No other crate in the Rust ecosystem with such a premise has existed before, requiring the creation of `sstv` in the first place. Since only the Robot 36 encoding logic is used by the downstream packages in this thesis, no other functionality of `sstv` will be discussed.
+The `sstv` crate isolates pure encoding and decoding functionality without any dependence on the specific hardware running the algorithms. In fact, the goal of the crate is to be maximally hardware agnostic to ensure compatibility with a wide array of systems. Beyond the Robot 36 mode required by this thesis, it implements most other modes from the Dayton paper @daytona-paper, supports decoding as well as encoding and has been published to Rust's default package registry crates.io#footnote("https://crates.io/crates/sstv"). No other crate in the Rust ecosystem with such a premise has existed before, requiring the creation of `sstv` in the first place. Since only the Robot 36 encoding logic is used by the downstream packages in this thesis, no other functionality of `sstv` will be discussed.
 
 `beacon` contains the modular functions, traits and structs for running the #acr("SSTV") logic on a satellite payload. It forms the shared core of the software family. Every variant imports it and provides only the implementations for its specific hardware.
 
@@ -176,8 +176,6 @@ The `Encoder` itself only ever buffers two rows of 320 `RgbPixel` each which con
 ) <img-stm-sstv-system>
 
 Since the initialization state boots up the hardware specific to the device running the firmware, it needs to be fully implemented by the carrier and can not be provided by `beacon`.
-
-As per the @req-error-communication, errors should be downlinked. Rust's `Result` system supports this effort by making all failure states transparent and allowing for convenient reporting methods. A custom method called `report_if_err()` is used to automatically downlink any error via the commanding link and continue on with the program.
 
 The states are entered through the three public functions `idle()`, `transmit_sstv()` and `update()`. Exposing `idle()` alone would be sufficient since it contains the control flow dispatching into the other two states. However, the underlying functions are deliberately public as well. This lets carriers choose to reuse a single behavior such as the #acr("SSTV") transmission while implementing their own control flow around it.
 
@@ -271,5 +269,30 @@ The @req-update-failure is the guiding principle behind the `update()` function,
 
 If an update announcement is received while the update is in progress, the already received chunks get deleted and the update start from the beginning. This prevents the system from being stuck in a half-finished update. Alternatively, the update state can be exited by deliberately sending a package with a wrong offset.
 
-If all chunks arrived as intended, the update only gets flashed in case the firmware can be validated by the official ESP32 update handler.
+If all chunks arrived as intended, the bootloader only switches to the partition with the new version in case the firmware can be validated by the official ESP32 update handler.
+
+=== Error Handling
+
+As per the @req-error-communication, errors should be downlinked. Rust's `Result` system supports this effort by making all failure states transparent and allowing for convenient reporting paths. A custom method called `report_if_err()` is used to automatically downlink any error via the commanding link and continue on with the program.
+
+As can be seen in @list-error-handling, the device is immediately rebooted via `.unwrap()` in the case of an error that would prevent any #acr("SSTV") transmission (like the failure of an audio device). In the case of a non-fatal error (e.g. the initalization failure of one of the cameras), the error is only downlinked and the execution continues.
+
+#figure(
+  ```rust
+  let mut audio = initialize_audio_channel()
+      .report_if_err(&link) // downlink audio error
+      .unwrap();            // reboot the device in case of audio error
+
+  let rgb_camera = initialize_rgb_camera()
+      .report_if_err(&link) // downlink camera error
+      .ok()                 // do not reboot device
+      .map(boxed);
+
+  let thermal_camera = initialize_thermal_camera()
+      .report_if_err(&link) // downlink camera error
+      .ok()                 // do not reboot device
+      .map(boxed);
+  ```,
+  caption: [Part of the `main()` function in `beacon-on-moveiiia` showing error downlinking and handling of fatal and non-fatal errors.],
+) <list-error-handling>
 

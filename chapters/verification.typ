@@ -86,7 +86,7 @@ The remaining stages of the encoding path are tested similarly. The conversion f
   caption: [The `synthesizer_matches_pure_sine_wave()` unit test in `sstv` verifying the generated audio samples against a floating point reference.],
 ) <list-test-synthesizer>
 
-In total, 29 tests cover the Robot 36 encoding path which all pass.
+In total, 25 tests cover the Robot 36 encoding path which all pass.
 
 === `beacon`
 
@@ -168,7 +168,7 @@ In total, `beacon` has three unit tests for `idle()` and five unit tests for `tr
 
 The integration tests verify the behavior of the carrier firmware as a black-box system @swebok[p. 5-7]. They can therefore only be applied in `beacon-on-moveiiia` and `beacon-on-tab5`. This section only discusses the tests for `beacon-on-moveiiia` since they mostly match the ones in `beacon-on-tab5` and @sec-verify-modularity goes further into details on the `beacon-on-tab5` implementation.
 
-The hardware for verifying the `beacon-on-moveiiia` carrier was deliberately set up isolated from the rest of the satellite to reduce the variables and make the setup replicable. A Raspberry Pi was chosen to mock all external interfaces. It provides the CSP message link through a USB to RS485 adapter and receives the audio samples via I2S. @img-test-setup shows the exact setup, while @tbl-test-wiring shows how the test setup is wired.
+The hardware for verifying the `beacon-on-moveiiia` carrier was deliberately set up isolated from the rest of the satellite to reduce the variables and make the setup replicable. A Raspberry Pi was chosen to mock all external interfaces. It provides the CSP message link through a USB to RS422 adapter and receives the audio samples via I2S. @img-test-setup shows the exact setup, while @tbl-test-wiring shows how the test setup is wired.
 
 #figure(
   image("../figures/test-setup.jpg", width: 60%),
@@ -187,8 +187,8 @@ The hardware for verifying the `beacon-on-moveiiia` carrier was deliberately set
     [ESP32-P4], [5V], [Raspberry Pi 4B], [5V],
     [ESP32-P4], [GND], [Raspberry Pi 4B], [GND],
 
-    [THVD1424], [TX+], [DSD TECH SH-U11], [RX-],
-    [THVD1424], [TX-], [DSD TECH SH-U11], [RX+],
+    [THVD1424], [TX+], [DSD TECH SH-U11], [RX+],
+    [THVD1424], [TX-], [DSD TECH SH-U11], [RX-],
     [THVD1424], [RX+], [DSD TECH SH-U11], [TX+],
     [THVD1424], [RX-], [DSD TECH SH-U11], [TX-],
   ),
@@ -426,7 +426,7 @@ Running these commands outputs a size of 385.92 kB. The full update is then spli
   caption: [Byte overhead breakdown of each update chunk.],
 ) <tab-update-chunks>
 
-With the total size of each chunk we can obtain the total size of the transmitted update as $3015 times 228 "B" = 687.648 "kB"$.
+With the total size of each chunk we can obtain the total size of the transmitted update as $3015 times 228 "B" = 687.42 "kB"$.
 
 == Requirement Verification
 
@@ -458,7 +458,7 @@ With the above sections, a verdict can be reached in @tab-requirement-verificati
     [Passed],
     [The transmission tests (@sec-test-both-cameras, @sec-test-rgb-only, @sec-test-thermal-only) trigger via the SSTV command.],
 
-    [Cameras Failure],
+    [Camera Failure],
     [Passed],
     [Both camera failure tests (@sec-test-rgb-only, @sec-test-thermal-only) pass.],
 
@@ -468,11 +468,11 @@ With the above sections, a verdict can be reached in @tab-requirement-verificati
 
     [Update Failure],
     [Passed],
-    [All of the update failure tests (@sec-test-update-incomplete, @sec-test-update-corrupt, @sec-test-update-chunk-incomplete, @sec-test-update-data-before-begin, @sec-test-update-wrong-offset) pass.],
+    [All of the update failure tests (@sec-test-update-incomplete, @sec-test-update-corrupt, @sec-test-update-chunk-incomplete, @sec-test-update-data-before-begin, @sec-test-update-end-before-begin, @sec-test-update-wrong-offset) pass.],
 
     [Error Communication],
     [Passed],
-    [All of the update failure tests (@sec-test-update-incomplete, @sec-test-update-corrupt, @sec-test-update-chunk-incomplete, @sec-test-update-data-before-begin, @sec-test-update-wrong-offset) receive the corresponding error.],
+    [All of the update failure tests (@sec-test-update-incomplete, @sec-test-update-corrupt, @sec-test-update-chunk-incomplete, @sec-test-update-data-before-begin, @sec-test-update-end-before-begin, @sec-test-update-wrong-offset) receive the corresponding error.],
 
     [Transmission Communication],
     [Passed],
@@ -480,7 +480,7 @@ With the above sections, a verdict can be reached in @tab-requirement-verificati
 
     [Size],
     [Passed],
-    [The 687.648 kB calculated in @sec-size are smaller than the 790.21 kB listed in the requirement.],
+    [The 687.42 kB calculated in @sec-size are smaller than the 790.21 kB listed in the requirement.],
   ),
   caption: [Verdict about each requirement if it was passed and reasoning given.],
 ) <tab-requirement-verification>

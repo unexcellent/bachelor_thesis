@@ -14,13 +14,13 @@ An #acr("SSTV") payload is fundamentally a service offered to the amateur satell
     columns: 3,
     align: left,
     [*Input*], [*Authors*], [*Verdict*],
-    [Encode the images via Robot 36C],
+    [Encode the images via Robot 36],
     [ISpentAllMyMoneyOnPi, TacitMoose, tsgmob, Own_Event_4363],
     [Accepted into the requirements.],
 
     [Send via SSDV],
     [TRGFelix],
-    [Rejected because decoding SSDV requires a more complex setup than SSTV @ukhas-ssdv, which just needs an FM radio and a smartphone running SSTV decoding software.],
+    [Rejected because decoding SSDV requires a more complex setup than SSTV @ukhas-ssdv, which just needs an FM radio and a smartphone running SSTV decoding software. However, this is a potential future feature.],
 
     [Use the payload to relay images between radio operators],
     [tsgmob],
@@ -28,7 +28,7 @@ An #acr("SSTV") payload is fundamentally a service offered to the amateur satell
 
     [Send pre-saved Images for Special Events],
     [Own_Event_4363],
-    [Rejected due to increased complexity and memory requirements.],
+    [Rejected due to increased complexity and memory requirements. However, this is a potential future feature.],
   ),
   caption: [Input from amateur satellite community from the post to the r/amateursatellites subreddit with author attributions and verdict reached if the input will be included in the software.],
 ) <tab-community-input>
@@ -44,7 +44,7 @@ Besides the community input, the software should reflect the constraints of a sa
     [*Name*], [*Description*],
 
     [#constraint("MCU")],
-    [The software runs on an unservicable, memory-constrained microcontroller without and operating system.],
+    [The software runs on an unservicable, memory-constrained microcontroller.],
 
     [#constraint("Cameras")],
     [At least one camera is connected to the microcontroller.],
@@ -89,7 +89,7 @@ Based on the mission context, the requirements on the system were collected in @
     [Capturing images is the purpose of the payload. Since the number and type of connected cameras changes between missions, the software has to support every connected camera instead of a fixed set.],
 
     [#req("Encoding")],
-    [The software shall encode the images via Robot 36C.],
+    [The software shall encode the images via Robot 36.],
     [Based on the community input in @tab-community-input.],
 
     [#req("Audio")],
@@ -129,11 +129,11 @@ Based on the mission context, the requirements on the system were collected in @
 
 == MOVE-IIIa Carrier
 
-The MOVE-IIIa #acr("SSTV") payload runs a family member of the software described in this thesis where two cameras are connected - one for the visual and one for the infrared color spectrum. Commanding is handled via RS485 which requires the use of a specialized transceiver component. The hardware setup is illustrated in @img-ibd-move-iiia and the pin mapping is shown in @tab-gpio.
+The MOVE-IIIa #acr("SSTV") payload runs a family member of the software described in this thesis where two cameras are connected - one for the visual and one for the infrared color spectrum. Commanding is handled via RS422 which requires the use of a specialized transceiver component. The hardware setup is illustrated in @img-ibd-move-iiia and the pin mapping is shown in @tab-gpio.
 
 #figure(
   image("../figures/imported/ibd_move_iiia.svg", width: 100%),
-  caption: [Internal block diagram of the MOVE-IIIa #acr("SSTV") system with the MCU (ESP32-P4), the RGB Camera (SC850SL), the thermal camera (MI1602) and the RS485 transceiver (THVD1424).],
+  caption: [Internal block diagram of the MOVE-IIIa #acr("SSTV") system with the MCU (ESP32-P4), the RGB Camera (SC850SL), the thermal camera (MI1602) and the RS422 transceiver (THVD1424).],
 ) <img-ibd-move-iiia>
 
 #figure(
@@ -142,7 +142,7 @@ The MOVE-IIIa #acr("SSTV") payload runs a family member of the software describe
     align: left,
     [*GPIO*], [*Connected to*], [*Label*], [*Purpose*],
     [9], [SC850SL], [SCL], [I2C bus clock],
-    [11], [SC850SL], [SDA], [camera register configuration],
+    [11], [SC850SL], [SDA], [Camera register configuration],
     [12], [MI1602], [SDA], [Register control],
     [15], [MI1602], [SCL], [MIPI-CSI bus clock],
     [20], [I2S], [MCLK], [Master clock],
@@ -155,7 +155,7 @@ The MOVE-IIIa #acr("SSTV") payload runs a family member of the software describe
     [31], [MI1602], [SSN], [SPI2 slave select],
     [37], [THVD1424], [RX], [Receives CSP messages from the payload board],
     [38], [THVD1424], [TX], [Transmits CSP messages to the payload board],
-    [39], [THVD1424], [DE], [Enables sending via RS485. Permanently held high],
+    [39], [THVD1424], [DE], [Enables sending via RS422. Permanently held high],
     [54], [SC850SL], [XSHUTDN], [Shutdown / reset],
   ),
   caption: [ESP32-P4 pin mapping for the MOVE-IIIa SSTV payload.],
