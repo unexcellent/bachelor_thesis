@@ -65,7 +65,7 @@
     }
   }
   label
-  v(-0.8em)
+  v(-0.9em)
   line(length: 100%, stroke: 1pt + custom-lightgray)
 }
 
@@ -93,7 +93,9 @@
   submission-date: none,
   logo: none,
 ) = {
-  set page(margin: (top: 3cm, bottom: 2.5cm, left: 3cm, right: 3cm))
+  // Equal top and bottom margins so the chair line and the last metadata row
+  // sit at the same distance from their page edge.
+  set page(margin: 3cm)
 
   // University identification on the left (specific -> general, tight spacing),
   // logo on the right scaled to exactly the height of those three lines.
@@ -131,7 +133,7 @@
   }
 
   set align(center)
-  v(4.5cm)
+  v(4.8cm)
 
   text(size: 13pt, weight: "medium")[#thesis-type]
   v(0.5cm)
@@ -154,6 +156,7 @@
     )
   }
 
+  set block(spacing: 1.5em)
   field("Author", author)
   field("Matriculation number", matriculation)
   field("Degree", degree)
@@ -161,8 +164,6 @@
   field("Supervisor", supervisor)
   field("Advisor", advisor)
   field("Submitted on", submission-date)
-
-  v(2cm)
 }
 
 // ---------------------------------------------------------------------------
@@ -229,8 +230,13 @@
   show heading.where(level: 6): set text(size: 11pt, fill: custom-gray)
   // Every top-level section starts on a new page, except these front-matter
   // sections which are paired onto the preceding section's page (Kurzfassung
-  // shares the Abstract page, List of Tables shares the List of Figures page).
-  let paired-front-matter = ([Kurzfassung], [List of Tables], [List of Listings])
+  // shares the Abstract page, Figures and Tables follow the
+  // Listings).
+  let paired-front-matter = (
+    [Kurzfassung],
+    [Figures],
+    [Tables],
+  )
   show heading.where(level: 1): it => {
     if it.body not in paired-front-matter {
       pagebreak(weak: true)
@@ -318,21 +324,21 @@
   heading(level: 1)[Contents]
   outline(title: none, indent: auto)
 
-  heading(level: 1)[List of Figures]
-  outline(title: none, target: figure.where(kind: image))
-
-  heading(level: 1)[List of Tables]
-  outline(title: none, target: figure.where(kind: table))
-
-  heading(level: 1)[List of Listings]
+  heading(level: 1)[Listings]
   outline(title: none, target: figure.where(kind: raw))
 
+  heading(level: 1)[Figures]
+  outline(title: none, target: figure.where(kind: image))
+
+  heading(level: 1)[Tables]
+  outline(title: none, target: figure.where(kind: table))
+
   if abbreviations != none {
-    heading(level: 1)[List of Abbreviations]
+    heading(level: 1)[Abbreviations]
     entry-list(abbreviations)
   }
   if symbols != none {
-    heading(level: 1)[List of Symbols]
+    heading(level: 1)[Symbols]
     entry-list(symbols, bold-key: false)
   }
 

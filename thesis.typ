@@ -12,7 +12,7 @@
 
 // Abbreviations: acronym -> long form. Referenced in the text via
 // #acr("...") (expands the long form on first use), and rendered as the
-// List of Abbreviations in the front matter. Keep alphabetically sorted.
+// Abbreviations list in the front matter. Keep alphabetically sorted.
 #let abbreviations = (
   "ARISS": "Amateur Radio on the International Space Station",
   "CSP": "CubeSat Space Protocol",
@@ -36,7 +36,7 @@
   matriculation: "03781731",
   supervisor: "Alessandro Golkar",
   advisor: "Jaspar Sindermann",
-  submission-date: "October 1st 2026",
+  submission-date: "30 September 2026",
   logo: image("figures/tum-logo.svg", width: 4.5cm),
   abstract: include "abstract.typ",
   kurzfassung: include "kurzfassung.typ",
