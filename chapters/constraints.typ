@@ -79,7 +79,7 @@ Based on the mission context, the requirements on the system were collected in @
 
     [#req("MCU")],
     [The software shall run on the ESP32-P4.],
-    [Unlike the peripherals, the #acr("MCU") cannot reasonably be abstracted. The boot process, flash layout and update mechanism are device-specific. The ESP32-P4 fits the #acr("SSTV") payload as it includes interfaces for camera and audio control, has a low power draw @esp32p4-datasheet[Sec. 5.6] and sufficient computing power for real-time #acr("SSTV") encoding @esp32p4-datasheet[Features].],
+    [Unlike the peripherals, the #acr("MCU") cannot reasonably be abstracted. The boot process, flash layout and update mechanism are device-specific. The ESP32-P4 fits the #acr("SSTV") payload as it includes interfaces for camera and audio control, has a low power draw and sufficient computing power for real-time #acr("SSTV") encoding @esp32p4-datasheet[p.~5].],
 
     [#req("Cameras")],
     [The software shall read the images from all connected cameras.],
@@ -91,7 +91,7 @@ Based on the mission context, the requirements on the system were collected in @
 
     [#req("Audio")],
     [The software shall output the audio samples via I2S.],
-    [The #acr("SSTV") system does not access the radio hardware itself but transmits the audio signal to the connected system. I2S is a widely supported interface for transmitting audio samples @nxp-i2s.],
+    [The #acr("SSTV") system does not access the radio hardware itself but transmits the audio signal to the connected system. I2S is a widely supported interface for transmitting audio samples @nxp-i2s[p.~2].],
 
     [#req("Commanding")],
     [The software shall trigger an #acr("SSTV") transmission when the corresponding command is received.],
@@ -119,7 +119,7 @@ Based on the mission context, the requirements on the system were collected in @
 
     [#req("Size")],
     [All bytes transmitted for an update shall be less than 790.21 kB.],
-    [If the firmware cannot be transmitted within a single overpass, the update state has to persist across multiple ground station contacts. This introduces additional error paths like the ground station losing track of the last received chunk. This limit of 790.21 kB is 50% of the data volume available for uplink on MOVE-IIIa via #acr("UHF") on an average overpass @move-iiia-cdr[p.~10] giving it a sizeable margin for error. Since this calculation is based on a #acr("UHF") link and satellite missions increasingly move to bands with higher data rates (such as S-band, X-band and Ka-band) @nasa-soa[p.~248], this is considered a reasonable assumption for other missions implementing this software.],
+    [If the firmware cannot be transmitted within a single overpass, the update state has to persist across multiple ground station contacts. This introduces additional error paths like the ground station losing track of the last received chunk. This limit of 790.21 kB is 50% of the data volume available for uplink on MOVE-IIIa via #acr("UHF") on an average overpass @move-iiia-cdr[p.~10] giving it a sizeable margin for error. Since this calculation is based on a #acr("UHF") link and satellite missions increasingly move to bands with higher data rates (such as S-band, X-band and Ka-band) @nasa-soa[p.~245], this is considered a reasonable assumption for other missions implementing this software.],
   ),
   caption: [Requirements for the software.],
 ) <tab-requirements>

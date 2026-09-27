@@ -13,10 +13,10 @@
   caption: [Frequency modulation of a carrier wave by a single-period sine signal (frequency shift exaggerated for illustration).],
 ) <img-fm>
 
-#acr("FM") is an angle modulation method, in which a source signal $f(t)$ controls the argument of a carrier wave rather than its amplitude. The modulated signal can be calculated by @eq-fm-signal with $f_0$ denoting the carrier frequency and $c$ denoting a modulation constant @signal-uebertragung[pp.~368–370].
+#acr("FM") is an angle modulation method, in which a source signal $f(t)$ controls the argument of a carrier wave rather than its amplitude. The modulated signal can be calculated by @eq-fm-signal with $f_0$ denoting the carrier frequency and $c$ denoting a modulation constant @signal-uebertragung[p.~368].
 
 $
-  m(t) = cos(2 pi f_0 t + 2 pi c integral_(-oo)^t f(tau) dif tau)
+  m(t) = cos(2 pi f_0 t + 2 pi c f(t))
 $ <eq-fm-signal>
 
 The information encoded in the signal is contained in its instantaneous frequency $f_i (t)$, which is the time derivative of the cosine argument divided by $2 pi$. As described in @eq-instantaneous-frequency, $f_i$ deviates from the carrier frequency proportionally to the source signal.
@@ -25,7 +25,7 @@ $
   f_i (t) = 1 / (2 pi) dot dif / (dif t) (2 pi f_0 t + 2 pi c integral_(-oo)^t f(tau) dif tau) = f_0 + c dot f(t)
 $ <eq-instantaneous-frequency>
 
-Since the amplitude of the modulated signal carries no information, #acr("FM") is more robust to noise but requires a higher transmission bandwidth @signal-uebertragung[p.~368].
+Since the amplitude of the modulated signal carries no information, #acr("FM") is more robust to noise but requires a higher transmission bandwidth @signal-uebertragung[pp.~369-370].
 
 In the case of #acr("SSTV"), this means that all image information is encoded in the instantaneous frequency of the received signal and can therefore be described as a series of tones, defined by a combination of frequencies and their durations.
 
@@ -51,11 +51,11 @@ Robot 36 is an #acr("SSTV") mode that transmits a colour image of 320 × 240 pix
 
 ==== Horizontal Synchronization
 
-Horizontal synchronization in Robot 36 is handled in two ways. Firstly, each line has the exact same duration. Therefore, if the first line is correctly synchronized and the duration stays consistent, the decoder can infer the row each pixel belongs to by timing alone @sstv-handbook[p.~24]. In addition, a 9 ms sync pulse of 1200 Hz and a 3 ms sync porch of 1500 Hz precede every line, aiding synchronization @daytona-paper[p.~5].
+Horizontal synchronization in Robot 36 is handled in two ways. Firstly, each line has the exact same duration. Therefore, if the first line is correctly synchronized and the duration stays consistent, the decoder can infer the row each pixel belongs to by timing alone @sstv-handbook[p.~24]. In addition, a 9 ms sync pulse of 1200 Hz and a 3 ms sync porch of 1500 Hz precede every line, aiding synchronization @daytona-paper.
 
 === Composite Colour Model
 
-Digital colour is usually encoded via RGB, an additive colour model, where every colour is decomposed into its primary components red, green and blue. Alternatively, a colour can be represented by YUV, a composite colour model. In YUV, the colour information of each pixel is separated from the brightness information @sstv-handbook[p.~3]. The Y component stores the brightness of each pixel derived from the red ($R$), green ($G$) and blue ($B$) components via @eq-luminance @video-demystified[p.~18].
+Digital colour is usually encoded via RGB, an additive colour model, where every colour is decomposed into its primary components red, green and blue. Alternatively, a colour can be represented by YUV, a composite colour model. In YUV, the colour information of each pixel is separated from the brightness information @sstv-handbook[pp.~20-21]. The Y component stores the brightness of each pixel derived from the red ($R$), green ($G$) and blue ($B$) components via @eq-luminance @video-demystified[p.~18].
 
 $ Y = 0.257 dot R + 0.504 dot G + 0.098 dot B + 16 $ <eq-luminance>
 
@@ -76,7 +76,7 @@ $ V = 0.439 dot R + 0.368 dot G - 0.071 dot B + 128 $ <eq-chrominance-red>
 
 === Robot 36 Colour Model
 
-Robot 36 aims to maximize image quality while keeping transmission time to a minimum. Since the human eye can identify differences in luminance much better than differences in chrominance, YUV is a natural choice for Robot 36. While the mode transmits luminance for every line, it only transmits blue chrominance for odd lines and red chrominance for even ones. Although this lossy process blends the colour of adjacent lines, the image appearance is mostly kept intact @daytona-paper[p.~5].
+Robot 36 aims to maximize image quality while keeping transmission time to a minimum. Since the human eye can identify differences in luminance much better than differences in chrominance, YUV is a natural choice for Robot 36. While the mode transmits luminance for every line, it only transmits blue chrominance for odd lines and red chrominance for even ones. Although this lossy process blends the colour of adjacent lines, the image appearance is mostly kept intact @daytona-paper.
 
 @img-robot36-lines shows two of the 240 scan-lines of a Robot 36 image.
 
@@ -97,7 +97,7 @@ The following sections detail how modularity can be achieved.
 
 === Modules and Information Hiding
 
-A module in software engineering refers to a part of a program that groups related functionality and separates it from the rest of the system @iso-24765[p.~279]. In that regard, it describes less a unit of code than a unit of responsibility. In a well-modularized system, every module is responsible for one design decision which it hides from all other parts of the system. Generally, the decisions to hide are the ones most likely to change since a change to those hidden decisions does not propagate to the rest of the system @parnas-criteria[p.~1056]. The process of concealing the module's inner logic is called information hiding @iso-24765[p.~220].
+A module in software engineering refers to a part of a program that combines related logic and separates it from the rest of the system @iso-24765[p.~279]. In that regard, it describes less a unit of code than a unit of responsibility. In a well-modularized system, every module is responsible for one design decision which it hides from all other parts of the system. Generally, the decisions to hide are the ones most likely to change since a change to those hidden decisions does not propagate to the rest of the system @parnas-criteria[p.~1056]. The process of concealing the module's inner logic is called information hiding @iso-24765[p.~220].
 
 === Interfaces
 

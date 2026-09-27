@@ -34,7 +34,7 @@ To keep the decision objective, the language was selected through a weighted-cri
     [0.15],
     [The software must run on the ESP32-P4 (@req-mcu) and interface with its peripherals such as the cameras (@req-cameras). This covers peripheral libraries, hardware abstraction and debugging support for that specific target.],
 
-    [Error handling & concurrency],
+    [Error handling],
     [0.15],
     [Degraded camera operation (@req-camera-failure) and the update flow (@req-updates) require explicit, non-silent error paths so faults can be reported to the ground (@req-error-communication).],
   ),
@@ -48,9 +48,9 @@ To keep the decision objective, the language was selected through a weighted-cri
     [*Criterion*], [*C / C++*], [*Rust*], [*MicroPython*],
 
     [Memory safety & fault tolerance],
-    [2 @miller2019proactive],
+    [2 @miller2019trends],
     [5 @xu2021rustcve],
-    [4 @micropython],
+    [4 @micropython-memorymgt],
 
     [Runtime performance],
     [5 @plauska2023evaluation],
@@ -64,12 +64,12 @@ To keep the decision objective, the language was selected through a weighted-cri
 
     [Toolchain & ecosystem maturity],
     [5 @espressif2026espidf],
-    [3 @rust-on-esp],
+    [3 @esp-hal-support],
     [3 @micropython],
 
-    [Error handling & concurrency],
+    [Error handling],
     [2 @rubio2009errorprop],
-    [5 @rust-book],
+    [5 @rust-book-result],
     [3 @micropython-isr],
 
     [*Weighted total*], [*3.65*], [*4.50*], [*2.70*],
@@ -77,7 +77,7 @@ To keep the decision objective, the language was selected through a weighted-cri
   caption: [Weighted scores of the candidate languages (1 = poor, 5 = excellent).],
 ) <tab-lang-scores>
 
-With a weighted total of 4.50, Rust was chosen for the firmware. MicroPython is ruled out by its computational overhead and footprint @plauska2023evaluation. C / C++ scores well on ecosystem and footprint but is held back by manual memory management, which causes the majority of security-relevant errors @miller2019proactive. While low-level Rust is not entirely immune to memory bugs, they are confined to explicitly marked `unsafe` code, significantly reducing the risk @xu2021rustcve.
+With a weighted total of 4.50, Rust was chosen for the firmware. MicroPython is ruled out by its computational overhead and footprint @plauska2023evaluation. C / C++ scores well on ecosystem and footprint but is held back by manual memory management, which causes the majority of security-relevant errors @miller2019trends. While low-level Rust is not entirely immune to memory bugs, they are confined to explicitly marked `unsafe` code, significantly reducing the risk @xu2021rustcve.
 
 == Commands
 

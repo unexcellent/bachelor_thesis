@@ -10,7 +10,7 @@ These practices only have an impact on the code base if they are consistently en
 
 == Unit Testing <sec-unit-testing>
 
-Unit testing is the verification of the behaviour of modules in isolation @swebok[p.~5-6]. It is used to validate the informal interface outside the scope of the compiler checks. By isolating the modules, hardware can be abstracted to allow the tests to run deterministically on the developer's machine. However, this restricts unit testing to `sstv` and `beacon` since carriers require direct hardware access.
+Unit testing is the verification of the behaviour of modules in isolation @swebok[p.~5-7]. It is used to validate the informal interface outside the scope of the compiler checks. By isolating the modules, hardware can be abstracted to allow the tests to run deterministically on the developer's machine. However, this restricts unit testing to `sstv` and `beacon` since carriers require direct hardware access.
 
 === `sstv`
 
