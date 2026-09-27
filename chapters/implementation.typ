@@ -4,13 +4,13 @@
 
 == Language Selection
 
-The ESP32, as a widely adopted platform, offers multiple programming languages in which to write the firmware. The main candidate languages are:
+The ESP32, as a widely adopted platform, offers multiple programming languages in which to write the firmware. The main candidates are:
 
 - *C / C++*: C and C++ are the languages used by the official software development kit from Espressif Systems @espressif2026espidf.
 - *Rust*: Rust offers modern ergonomics and prevents most memory-safety errors via its compiler-enforced borrow-checker model @rust-vs-cpp.
 - *Python*: Python can be used to program the ESP32 using the community-developed MicroPython port @micropython.
 
-To keep the decision objective, the language was selected through a weighted-criteria analysis. A set of assessment criteria was derived from the requirements in @tab-requirements and weighted according to their impact on the mission before any language was assessed. The weights reflect that the firmware runs on a resource-constrained microcontroller that cannot be physically serviced once in orbit. Each candidate was then scored from one (poor) to five (excellent) against every criterion and the weighted sum determined the outcome. The criteria and their weights are listed in @tab-lang-criteria and the resulting scores in @tab-lang-scores.
+To keep the decision objective, the language was selected through a weighted-criteria analysis. A set of assessment criteria was derived from the requirements in @tab-requirements and weighted according to their impact on the mission before any language was assessed. Each candidate was then scored from one (bad) to five (good) against every criterion and the weighted sum was used to determined the outcome. The criteria and their weights are listed in @tab-lang-criteria and the resulting scores in @tab-lang-scores.
 
 #figure(
   table(
@@ -24,7 +24,7 @@ To keep the decision objective, the language was selected through a weighted-cri
 
     [Runtime performance],
     [0.20],
-    [Robot 36 encoding (@req-encoding) and the continuous I2S sample output (@req-audio) are soft real-time and must not fall behind.],
+    [Robot 36 encoding (@req-encoding) and the continuous I2S sample output (@req-audio) are soft real-time and should not fall behind.],
 
     [Memory & flash footprint],
     [0.20],
@@ -118,7 +118,7 @@ The command interface is used to control the SSTV system via the RS422 link to t
     [A single 0x03 byte],
     [Announce that the update is done],
   ),
-  caption: [#acr("CSP") commands receivable by the SSTV system.],
+  caption: [CSP commands receivable by the SSTV system.],
 ) <tab-commands>
 
 == Software Architecture
@@ -130,7 +130,7 @@ To maximize the value this thesis provides to the #acr("SSTV") community, it was
   caption: [Package diagram for the SSTV system depicting the relationship between `sstv`, `beacon`, `beacon-on-moveiiia` and `beacon-on-tab5`.],
 ) <img-pkg-software>
 
-The `sstv` crate isolates pure encoding and decoding functionality without any dependence on the specific hardware running the algorithms. In fact, the goal of the crate is to be maximally hardware-agnostic to ensure compatibility with a wide array of systems. Beyond the Robot 36 mode required by this thesis, it implements most other modes from the Dayton paper @daytona-paper, supports decoding as well as encoding and has been published to Rust's default package registry crates.io#footnote("https://crates.io/crates/sstv"). Since no comparable crate existed in the Rust ecosystem, `sstv` had to be created. Since only the Robot 36 encoding logic is used by the downstream packages in this thesis, no other functionality of `sstv` will be discussed.
+The `sstv` crate isolates pure encoding and decoding functionality without any dependence on the specific hardware running the algorithms. In fact, the goal of the crate is to be maximally hardware-agnostic to ensure compatibility with a wide array of systems. Beyond the Robot 36 mode required by this thesis, it implements most other modes from the Dayton paper @daytona-paper, supports decoding as well as encoding and has been published to Rust's default package registry crates.io#footnote("https://crates.io/crates/sstv"). Since no comparable crate existed in the Rust ecosystem, `sstv` had to be created. Because only the Robot 36 encoding logic is used by the downstream packages in this thesis, no other functionality of `sstv` will be discussed.
 
 `beacon` contains the modular functions, traits and structs for running the #acr("SSTV") logic on a satellite payload. It forms the shared core of the software family. Every variant imports it and provides only the implementations for its specific hardware.
 
@@ -162,7 +162,7 @@ In the encoding pipeline, the `Encoder` struct consumes an iterator of `RgbPixel
   caption: [Example of how a user would implement the `sstv` encoding pipeline with `...` representing placeholders for device-specific code.],
 ) <list-sstv-encoding>
 
-The `Encoder` itself only ever buffers two rows of 320 `RgbPixel` each, which are converted to YUV, averaged over the two lines, converted into a frequency and then emitted as depicted in @img-act-encoder.
+The `Encoder` itself only ever buffers two rows of 320 `RgbPixel` each, which are converted to YUV, averaged over the two lines, transformed into a frequency and then emitted as depicted in @img-act-encoder.
 
 #figure(
   image("../figures/imported/act_encoder.svg", width: 100%),
@@ -252,13 +252,13 @@ The `CommandLink` trait is used as the interface to the commanding link, requiri
 
 === SSTV Transmission
 
-The SSTV transmission state is responsible for the main function of the software, emitting audio samples based on input from the camera(s). Ideally, all cameras would capture images at the same time in order to get images of the same location in orbit from different angles or different light spectra. However, since the cameras can only be accessed sequentially, all images are captured before any transmission starts to keep the captures as close together in time as possible.
+The SSTV transmission state is responsible for the main function of the software, emitting audio samples based on input from the cameras. Ideally, all cameras would capture images at the same time in order to get pictures of the same location in orbit from different angles or different light spectra. However, since the cameras can only be accessed sequentially, all images are captured before any transmission starts to keep the captures as close together in time as possible.
 
 A pause of five seconds is used between the transmissions to allow ground station systems on Earth to process the image before the next one is transmitted. @img-act-transmit-sstv shows how the `transmit_sstv()` function is implemented.
 
 #figure(
   image("../figures/imported/act_transmit_sstv.svg", width: 100%),
-  caption: [Activity diagram of the #acr("SSTV") transmission.],
+  caption: [Activity diagram of the SSTV transmission.],
 ) <img-act-transmit-sstv>
 
 === Updating

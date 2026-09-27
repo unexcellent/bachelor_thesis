@@ -30,16 +30,6 @@
 
   v(2.5cm)
 
-  grid(
-    columns: (1fr, 1fr),
-    align: left,
-    [
-      #line(length: 5cm, stroke: 0.5pt)
-      #place, #if date != none { date }
-    ],
-    [
-      #line(length: 5cm, stroke: 0.5pt)
-      #author
-    ],
-  )
+  line(length: 2/3 * 100%, stroke: 0.5pt)
+  [#place, #if date != none { date }]
 }

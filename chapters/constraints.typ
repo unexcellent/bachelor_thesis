@@ -7,7 +7,7 @@
 
 === Community Input
 
-An #acr("SSTV") payload is fundamentally a service offered to the amateur satellite community. As such, its design should reflect the wishes of this stakeholder group. Therefore, a post @reddit-sstv-post was created in the r/amateursatellites subreddit describing the project and asking for feedback and input. The individual points concerning the software are listed in @tab-community-input.
+An #acr("SSTV") payload is fundamentally a service offered to the amateur satellite community. As such, its design should reflect the wishes of this stakeholder group. Therefore, a post @reddit-sstv-post was created in the r/amateursatellites subreddit describing the project and asking for feedback and input. The individual comments concerning the software are listed in @tab-community-input.
 
 #figure(
   table(
@@ -46,17 +46,14 @@ Besides the community input, the software should reflect the constraints of a sa
     [#constraint("MCU")],
     [The software runs on an unserviceable, memory-constrained microcontroller.],
 
-    [#constraint("Cameras")],
-    [At least one camera is connected to the microcontroller.],
-
-    [#constraint("Audio")],
-    [The audio should be output as a continuous stream of samples.],
-
     [#constraint("Commanding")],
     [The device is connected to a commanding link and commands are transmitted using the #acr("CSP").],
 
     [#constraint("Ground Link")],
     [The radio link from the ground station to the satellite is bandwidth-constrained.],
+
+    [#constraint("Power")],
+    [The system is powered by the host satellite and has to operate within a limited power budget.],
   ),
   caption: [Constraints for the software from the space environment.],
 ) <tab-constraints>
@@ -67,7 +64,7 @@ The constraints from @tab-constraints result in the minimal hardware structure s
 
 #figure(
   image("../figures/imported/ibd_general.svg", width: 100%),
-  caption: [Internal block diagram of the general system this software is designed for with the #acr("MCU"), a commanding and an I2S connection out of the system and an arbitrary number of connected cameras.],
+  caption: [Internal block diagram of the general system this software is designed for with the MCU, a commanding and an I2S connection out of the system and an arbitrary number of connected cameras.],
 ) <img-ibd-general>
 
 == Requirements
@@ -86,7 +83,7 @@ Based on the mission context, the requirements on the system were collected in @
 
     [#req("Cameras")],
     [The software shall read the images from all connected cameras.],
-    [Capturing images is the purpose of the payload. Since the number and type of connected cameras changes between missions, the software has to support every connected camera instead of a fixed set.],
+    [The number and type of connected cameras can change between carriers. The software has to support every connected camera instead of a fixed amount.],
 
     [#req("Encoding")],
     [The software shall encode the images via Robot 36.],
@@ -106,15 +103,15 @@ Based on the mission context, the requirements on the system were collected in @
 
     [#req("Updates")],
     [The software shall be able to receive firmware updates via the commanding link.],
-    [Since the payload is unservicable after deployment, bugs discovered in orbit can only be fixed by replacing the firmware remotely. Updates also allow adding features after launch.],
+    [Bugs discovered in orbit can only be fixed by replacing the firmware remotely. Updates also allow adding features after launch.],
 
     [#req("Update Failure")],
     [A failed update shall not lead to an unrecoverable state.],
-    [Ground-to-space radio links are unreliable. Since the payload is unserviceable after deployment, a fault in the update transmitted from the ground must not result in the loss of the #acr("SSTV") payload.],
+    [Ground-to-space radio links are unreliable. A fault in the update transmitted from the ground must not result in the loss of the #acr("SSTV") payload.],
 
     [#req("Error Communication")],
     [The software shall communicate any recoverable errors to the ground station.],
-    [Debugging requires information about the nature of any error beyond 'no #acr("SSTV") signal was received'.],
+    [Debugging requires information about the nature of any error 'no #acr("SSTV") signal was received'.],
 
     [#req("Transmission Communication")],
     [The software shall communicate when an SSTV transmission starts and ends.],
@@ -133,7 +130,7 @@ The MOVE-IIIa #acr("SSTV") payload runs a member of the software family describe
 
 #figure(
   image("../figures/imported/ibd_move_iiia.svg", width: 100%),
-  caption: [Internal block diagram of the MOVE-IIIa #acr("SSTV") system with the MCU (ESP32-P4), the RGB Camera (SC850SL), the thermal camera (MI1602) and the RS422 transceiver (THVD1424).],
+  caption: [Internal block diagram of the MOVE-IIIa SSTV system with the MCU (ESP32-P4), the RGB Camera (SC850SL), the thermal camera (MI1602) and the RS422 transceiver (THVD1424).],
 ) <img-ibd-move-iiia>
 
 #figure(
@@ -153,8 +150,16 @@ The MOVE-IIIa #acr("SSTV") payload runs a member of the software family describe
     [29], [MI1602], [MISO], [SPI2 data input],
     [30], [MI1602], [MOSI], [SPI2 data output],
     [31], [MI1602], [SSN], [SPI2 slave select],
-    [37], [THVD1424], [RX], [Receives CSP messages from the payload board],
-    [38], [THVD1424], [TX], [Transmits CSP messages to the payload board],
+    [37],
+    [THVD1424],
+    [RX],
+    [Receives #acr("CSP") messages from the payload board],
+
+    [38],
+    [THVD1424],
+    [TX],
+    [Transmits #acr("CSP") messages to the payload board],
+
     [39], [THVD1424], [DE], [Enables sending via RS422 (permanently held high)],
     [54], [SC850SL], [XSHUTDN], [Shutdown / reset],
   ),

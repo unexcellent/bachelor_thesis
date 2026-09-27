@@ -45,6 +45,19 @@ def chroma_red(r, g, b):
     return 0.439 * r - 0.368 * g - 0.071 * b + 128
 
 
+# Luminance used to visualise the chrominance bars, so that only the respective
+# chrominance component changes the colour (mid-grey on the 16..235 scale).
+CHROMA_PREVIEW_Y = 126
+
+
+def yuv_to_rgb(y, u, v):
+    """Inverse of the BT.601 studio-swing conversion above, clipped to 0..1."""
+    r = 1.164 * (y - 16) + 1.596 * (v - 128)
+    g = 1.164 * (y - 16) - 0.813 * (v - 128) - 0.391 * (u - 128)
+    b = 1.164 * (y - 16) + 2.018 * (u - 128)
+    return tuple(min(max(c / 255, 0.0), 1.0) for c in (r, g, b))
+
+
 def style(ax):
     ax.set_xlim(0, len(BARS))
     ax.set_ylim(F_MIN, 2450)
@@ -105,11 +118,15 @@ draw_bars(ax, [to_freq(v) for v in y_values], [(g,) * 3 for g in gray_levels], "
 
 ax = axes[2][1]
 style(ax)
-draw_bars(ax, [to_freq(chroma_red(r, g, b)) for _, r, g, b in BARS], "#ff0000", "R−Y", baseline=to_freq(128))
+v_values = [chroma_red(r, g, b) for _, r, g, b in BARS]
+v_colors = [yuv_to_rgb(CHROMA_PREVIEW_Y, 128, v) for v in v_values]
+draw_bars(ax, [to_freq(v) for v in v_values], v_colors, "R−Y", baseline=to_freq(128))
 
 ax = axes[3][1]
 style(ax)
-draw_bars(ax, [to_freq(chroma_blue(r, g, b)) for _, r, g, b in BARS], "#0000ff", "B−Y", baseline=to_freq(128))
+u_values = [chroma_blue(r, g, b) for _, r, g, b in BARS]
+u_colors = [yuv_to_rgb(CHROMA_PREVIEW_Y, u, 128) for u in u_values]
+draw_bars(ax, [to_freq(u) for u in u_values], u_colors, "B−Y", baseline=to_freq(128))
 
 for col in (0, 1):
     axes[2][col].set_ylabel("Frequency [kHz]", fontsize=11, color=MUTED)

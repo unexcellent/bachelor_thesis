@@ -9,7 +9,7 @@
 #acr("SSTV"), as an analogue technology, relies on tones modulated onto much higher-frequency radio waves to transmit the image. This is done the same way that most analogue radio stations transmit sound today, via #acr("FM") @sstv-handbook[p.~14]. The technique is illustrated in @img-fm.
 
 #figure(
-  image("../figures/frequency-modulation.svg", width: 80%),
+  image("../figures/frequency-modulation.svg", width: 100%),
   caption: [Frequency modulation of a carrier wave by a single-period sine signal (frequency shift exaggerated for illustration).],
 ) <img-fm>
 
@@ -27,11 +27,11 @@ $ <eq-instantaneous-frequency>
 
 Since the amplitude of the modulated signal carries no information, #acr("FM") is more robust to noise but requires a higher transmission bandwidth @signal-uebertragung[p.~368].
 
-In the case of #acr("SSTV"), this means that all image information is encoded in the instantaneous frequency of the received signal and can therefore be described as a series of frequencies and their durations.
+In the case of #acr("SSTV"), this means that all image information is encoded in the instantaneous frequency of the received signal and can therefore be described as a series of tones, defined by a combination of frequencies and their durations.
 
 === Synchronization
 
-To convert a one-dimensional audio signal to a two-dimensional image, special signals need to be defined to announce the start of an image (vertical synchronization) and the start of a new line (horizontal synchronization).
+To convert a one-dimensional audio signal to a two-dimensional image, special tones need to be defined to announce the start of an image (vertical synchronization) and the start of a new line (horizontal synchronization).
 
 ==== Vertical Synchronization
 
@@ -39,14 +39,14 @@ Vertical synchronization allows the decoder to automatically detect the start of
 
 #figure(
   image("../figures/vox-tones.svg", width: 100%),
-  caption: [VOX tones used by most #acr("SSTV") programs as a diagram of frequency by time.],
+  caption: [VOX tones used by most SSTV programs as a diagram of frequency by time.],
 ) <img-vox>
 
 Robot 36 is an #acr("SSTV") mode that transmits a colour image of 320 × 240 pixels in 36 seconds @daytona-paper. Each image encoded via Robot 36 starts with a predefined set of tones called the #acr("VIS") code, containing sequences for tuning, calibration and mode identification. Each mode has a unique identification number transmitted in binary form where a zero is represented by a 1300 Hz tone and a one by a 1100 Hz tone. The identification number for Robot 36 is 8 in decimal or 0001000 in binary. An additional parity bit serves as a simple error detection mechanism. If the number of ones in the identification is odd, a one is used. Otherwise, a zero is used. This results in the #acr("VIS") code in @img-vis @daytona-paper.
 
 #figure(
   image("../figures/vis-code.svg", width: 100%),
-  caption: [Robot 36 #acr("VIS") code tones as a diagram of frequency by time with labeled secctions.],
+  caption: [Robot 36 VIS code tones as a diagram of frequency by time with labelled sections.],
 ) <img-vis>
 
 ==== Horizontal Synchronization
@@ -82,7 +82,7 @@ Robot 36 aims to maximize image quality while keeping transmission time to a min
 
 #figure(
   image("../figures/horizontal-synchronization.svg", width: 100%),
-  caption: [Frequency by time diagrams of the tones of an even and an odd line in a Robot 36 encoded image with labeled sections.],
+  caption: [Frequency by time diagrams of the tones of an even and an odd line in a Robot 36 encoded image with labelled sections.],
 ) <img-robot36-lines>
 
 == Modular Programming

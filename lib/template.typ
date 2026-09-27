@@ -237,6 +237,24 @@
     [Figures],
     [Tables],
   )
+  // Sub-headings stay on the current page only if at least four lines of body
+  // text fit below them; otherwise they move to the next page instead of ending
+  // up at the bottom with only a line or two of their section underneath.
+  show heading.where(level: 2).or(heading.where(level: 3)).or(heading.where(level: 4)): it => context {
+    // Measured in body text (11pt, see the text set rule below), not in the
+    // heading's own font size, which `em` would resolve to in here.
+    let lines = measure(text(size: 11pt, weight: "regular")[x \ x \ x \ x]).height
+    // The heading's `below` spacing (0.7em of its font size) is swallowed by
+    // the reserved space, so it is part of the reservation and re-added after.
+    let gap = 0.7 * text.size
+    let reserve = gap + lines - 1pt
+    block(breakable: false, above: 1.2em, below: 0pt, {
+      it
+      v(reserve)
+    })
+    v(-reserve)
+    block(height: 0pt, above: 0pt, below: gap)
+  }
   show heading.where(level: 1): it => {
     if it.body not in paired-front-matter {
       pagebreak(weak: true)

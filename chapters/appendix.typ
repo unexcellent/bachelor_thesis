@@ -14,21 +14,21 @@ All software created for this thesis is publicly available on GitHub. The links 
     )[github.com/unexcellent/sstv]],
 
     [`beacon`],
-    [`23cea60`],
+    [`ddfb0fa`],
     [#link(
-      "https://github.com/unexcellent/beacon/tree/23cea60dea08dfc602fea99cbffc7cc137fcf592",
+      "https://github.com/unexcellent/beacon/commit/ddfb0fa97a50e756c7e08c2a90068ac2cdd988a2",
     )[github.com/unexcellent/beacon]],
 
     [`beacon-on-moveiiia`],
-    [`1679222`],
+    [`f1854ca`],
     [#link(
-      "https://github.com/unexcellent/beacon-on-moveiiia/tree/1679222ac06a7d9d6f6d690811a43c71ec104f16",
+      "https://github.com/unexcellent/beacon-on-moveiiia/commit/f1854caa258e774b6aa447ad343c408d6d51cce7",
     )[github.com/unexcellent/beacon-on-moveiiia]],
 
     [`beacon-on-tab5`],
-    [`4a713dc`],
+    [`883920a`],
     [#link(
-      "https://github.com/unexcellent/beacon-on-tab5/tree/4a713dc7458d2aea3730a726359aef95fddfe62e",
+      "https://github.com/unexcellent/beacon-on-tab5/commit/883920a99cf45621db588100fa9171af6c55f20a",
     )[github.com/unexcellent/beacon-on-tab5]],
   ),
   caption: [Repositories created for this thesis.],

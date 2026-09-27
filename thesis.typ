@@ -59,7 +59,7 @@
 #counter(heading).update(0)
 
 #heading[References]
-#bibliography("references.bib", style: "ieee", title: none)
+#bibliography("references.bib", style: "lib/ieee-bold-authors.csl", title: none)
 
 #include "chapters/appendix.typ"
 
