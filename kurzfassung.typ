@@ -1,1 +1,5 @@
+Slow-Scan Television (SSTV) ist ein analoges Verfahren zur Übertragung von Bildern über Funk, das bis heute von Funkamateuren genutzt wird. Diese Arbeit stellt eine modulare Firmware für SSTV-Systeme auf Satelliten, die auf einem ESP32-P4-Mikrocontroller läuft, vor. Sie ist in Rust geschrieben und in mehrere Crates aufgeteilt.
 
+`beacon` enthält die gemeinsame Laufzeitlogik für die Aufnahme, Kodierung und Übertragung von Bildern, den Umgang mit Kameraausfällen, die Meldung von Fehlern und den Empfang von Firmware-Updates. Die Hardware wird über Traits abstrahiert, sodass ein neues System nur die hardwarespezifischen Module implementieren muss. Die Kodierung erfolgt über `sstv`, eine hardwareunabhängige, auf #link("https://crates.io/crates/sstv")[crates.io] veröffentlichte Bibliothek.
+
+`beacon-on-moveiiia` implementiert diese Traits für das SSTV-System des MOVE-IIIa-Satelliten. Unit- und Integrationstests verifizieren, dass es alle Anforderungen erfüllt. Eine zweite Implementierung für das M5Stack Tab5, die dieselben Tests besteht, demonstriert die Modularität der Software.
