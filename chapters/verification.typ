@@ -112,7 +112,7 @@ Unit testing in `beacon` reveals another benefit of modular programming. The tra
       }
   }
   ```,
-  caption: [The `FakeCamera` struct and its implementation of `Camera` in `beacon`. The code was slightly restructured for readability while remaining functionally identical to the actual implementation.],
+  caption: [The `FakeCamera` struct and its implementation of `Camera` in `beacon`. Restructured for clarity.],
 ) <list-fake-camera>
 
 The mock devices can then be used in the tests to check the behaviour as seen in @list-test-transmit-sstv.
@@ -577,6 +577,6 @@ Since all of the copied tests pass, `beacon` can be considered modular. @img-tab
 
 #figure(
   image("../figures/tab5-decoding.jpg", width: 60%),
-  caption: [SSTV transmission from the Tab5 decoded on a smartphone.],
+  caption: [SSTV transmission from the Tab5 decoded on a smartphone via #link("https://www.slowscan.space").],
 ) <img-tab5-decoding>
 

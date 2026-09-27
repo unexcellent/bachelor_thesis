@@ -39,14 +39,14 @@ Vertical synchronization allows the decoder to automatically detect the start of
 
 #figure(
   image("../figures/vox-tones.svg", width: 100%),
-  caption: [VOX tones used by most #acr("SSTV") programs.],
+  caption: [VOX tones used by most #acr("SSTV") programs as a diagram of frequency by time.],
 ) <img-vox>
 
 Robot 36 is an #acr("SSTV") mode that transmits a colour image of 320 × 240 pixels in 36 seconds @daytona-paper. Each image encoded via Robot 36 starts with a predefined set of tones called the #acr("VIS") code, containing sequences for tuning, calibration and mode identification. Each mode has a unique identification number transmitted in binary form where a zero is represented by a 1300 Hz tone and a one by a 1100 Hz tone. The identification number for Robot 36 is 8 in decimal or 0001000 in binary. An additional parity bit serves as a simple error detection mechanism. If the number of ones in the identification is odd, a one is used. Otherwise, a zero is used. This results in the #acr("VIS") code in @img-vis @daytona-paper.
 
 #figure(
   image("../figures/vis-code.svg", width: 100%),
-  caption: [Robot 36 #acr("VIS") code.],
+  caption: [Robot 36 #acr("VIS") code tones as a diagram of frequency by time with labeled secctions.],
 ) <img-vis>
 
 ==== Horizontal Synchronization
@@ -71,7 +71,7 @@ $ V = 0.439 dot R + 0.368 dot G - 0.071 dot B + 128 $ <eq-chrominance-red>
 
 #figure(
   image("../figures/rgb-vs-yuv.svg", width: 100%),
-  caption: [Basic colour composition for RGB (left) and YUV (right) @sstv-handbook[pp.~20-22].],
+  caption: [Frequency by time diagrams of select colours in RGB (left) and YUV (right) @sstv-handbook[pp.~20-22].],
 ) <img-rgb-vs-yuv>
 
 === Robot 36 Colour Model
@@ -82,7 +82,7 @@ Robot 36 aims to maximize image quality while keeping transmission time to a min
 
 #figure(
   image("../figures/horizontal-synchronization.svg", width: 100%),
-  caption: [Two scan-lines of a Robot 36 transmission.],
+  caption: [Frequency by time diagrams of the tones of an even and an odd line in a Robot 36 encoded image with labeled sections.],
 ) <img-robot36-lines>
 
 == Modular Programming

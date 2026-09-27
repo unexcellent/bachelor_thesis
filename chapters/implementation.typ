@@ -113,7 +113,10 @@ The command interface is used to control the SSTV system via the RS422 link to t
     [Starting with a 0x02 byte followed by the chunk offset as an unsigned 32-bit integer and the firmware bytes of that chunk],
     [Part of the new firmware],
 
-    [Update End], [10], [A single 0x03 byte], [Announce that the update is done],
+    [Update End],
+    [10],
+    [A single 0x03 byte],
+    [Announce that the update is done],
   ),
   caption: [#acr("CSP") commands receivable by the SSTV system.],
 ) <tab-commands>
@@ -264,7 +267,7 @@ The @req-update-failure is the guiding principle behind the `update()` function,
 
 #figure(
   image("../figures/imported/stm_updating.svg", width: 100%),
-  caption: [State machine diagram of the update mechanism.],
+  caption: [State machine diagram of the update mechanism with the Announced, In Progress, Validating Update and Writing to Flash states.],
 ) <img-stm-updating>
 
 If an update announcement is received while the update is in progress, the chunks received so far are discarded and the update starts from the beginning. This prevents the system from being stuck in a half-finished update. Alternatively, the update state can be exited by deliberately sending a chunk with a wrong offset.
@@ -293,6 +296,6 @@ As can be seen in @list-error-handling, the device is immediately rebooted via `
       .ok()                 // do not reboot device
       .map(boxed);
   ```,
-  caption: [Part of the `main()` function in `beacon-on-moveiiia` showing error downlinking and handling of fatal and non-fatal errors.],
+  caption: [Part of the `main()` function in `beacon-on-moveiiia` showing error downlinking and handling of fatal and non-fatal errors. Reformatted and commented for clarity.],
 ) <list-error-handling>
 
