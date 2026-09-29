@@ -10,7 +10,7 @@ These practices only have an impact on the code base if they are consistently en
 
 == Unit Testing <sec-unit-testing>
 
-Unit testing is the verification of the behaviour of modules in isolation @swebok[p.~5-7]. It is used to validate the informal interface outside the scope of the compiler checks. By isolating the modules, hardware can be abstracted to allow the tests to run deterministically on the developer's machine. However, this restricts unit testing to `sstv` and `beacon` since carriers require direct hardware access.
+Unit testing is the verification of the behaviour of modules in isolation @swebok[p.~5-7]. It is used to verify the informal interface outside the scope of the compiler checks. By isolating the modules, hardware can be abstracted to allow the tests to run deterministically on the developer's machine. However, this restricts unit testing to `sstv` and `beacon` since carriers require direct hardware access.
 
 === `sstv`
 
@@ -440,7 +440,7 @@ Based on the above sections, @tab-requirement-verification states whether each r
 
     [MCU],
     [Passed],
-    [The fact that the integration tests pass on the ESP32-P4 validates this requirement.],
+    [The fact that the integration tests pass on the ESP32-P4 verifies this requirement.],
 
     [Cameras],
     [Passed],
@@ -487,7 +487,7 @@ Based on the above sections, @tab-requirement-verification states whether each r
 
 == Modularity <sec-verify-modularity>
 
-Since `beacon-on-moveiiia` already imports `beacon`, it could be argued that the SSTV system itself validates the modularity of `beacon`. However, both crates were developed alongside each other for the same hardware. Any decision about the hardware that accidentally leaked into `beacon` would therefore go unnoticed because `beacon-on-moveiiia` implements it anyway. Only a second carrier with different hardware can verify the software's modularity.
+Since `beacon-on-moveiiia` already imports `beacon`, it could be argued that the SSTV system itself verifies the modularity of `beacon`. However, both crates were developed alongside each other for the same hardware. Any decision about the hardware that accidentally leaked into `beacon` would therefore go unnoticed because `beacon-on-moveiiia` implements it anyway. Only a second carrier with different hardware can verify the software's modularity.
 
 For this purpose, the M5Stack Tab5 IoT Development Kit (from here on referred to as the Tab5) was chosen. The Tab5 is powered by an ESP32-P4 and has a builtin RGB camera (the SC2356) and speaker (driven by the NS4150B audio amplifier). These are notably distinct from the devices used in `beacon-on-moveiiia` and therefore require a custom carrier.
 

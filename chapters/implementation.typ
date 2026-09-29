@@ -81,7 +81,9 @@ With a weighted total of 4.50, Rust was chosen for the firmware. MicroPython is 
 
 == Commands
 
-The command interface is used to control the SSTV system via the RS422 link to the payload board. Commands are encoded as #acr("CSP") messages and can originate from any board on the satellite bus or the ground station. The commands were originally specified for the MOVE-IIIa mission. However, `beacon` defines them for all carriers since its functions can only implement the entire control flow if the commands are known in advance. Because no command contains any MOVE-IIIa-specific behaviour, the set was adopted for the whole software family. Only the transport of the commands is left to the carrier.
+The command interface is used to control the SSTV system via the RS422 link to the payload board. The commands were originally specified for the MOVE-IIIa mission. However, `beacon` defines them for all carriers since its functions can only implement the entire control flow if the commands are known in advance. Because no command contains any MOVE-IIIa-specific behaviour, the set was adopted for the whole software family. Only the transport of the commands is left to the carrier.
+
+Commands are encoded as #acr("CSP") messages. `libcsp` is a lightweight protocol stack for communication on distributed, embedded systems @libcsp-index. Source and destination are defined by a node and a port where the node defines the device and the port defines the service on the respective node @libcsp-header. Since the SSTV system operates on a single node, only the port is used to group the different messages.
 
 #figure(
   table(
@@ -272,7 +274,7 @@ The @req-update-failure is the guiding principle behind the `update()` function,
 
 If an update announcement is received while the update is in progress, the chunks received so far are discarded and the update starts from the beginning. This prevents the system from being stuck in a half-finished update. Alternatively, the update state can be exited by deliberately sending a chunk with a wrong offset.
 
-If all chunks arrived as intended, the bootloader only switches to the partition with the new version if the firmware can be validated by the official ESP32 update handler.
+If all chunks arrived as intended, the bootloader only switches to the partition with the new version if the firmware can be validated by the official ESP32 update handler. Note that the software is only modular on the source code level. The firmware is compiled into a single binary and every update needs to uplink the entire firmware rather than individual modules.
 
 === Error Handling
 
