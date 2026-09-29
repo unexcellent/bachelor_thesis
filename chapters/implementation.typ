@@ -83,7 +83,7 @@ With a weighted total of 4.50, Rust was chosen for the firmware. MicroPython is 
 
 The command interface is used to control the SSTV system via the RS422 link to the payload board. The commands were originally specified for the MOVE-IIIa mission. However, `beacon` defines them for all carriers since its functions can only implement the entire control flow if the commands are known in advance. Because no command contains any MOVE-IIIa-specific behaviour, the set was adopted for the whole software family. Only the transport of the commands is left to the carrier.
 
-Commands are encoded as #acr("CSP") messages. `libcsp` is a lightweight protocol stack for communication on distributed, embedded systems @libcsp-index. Source and destination are defined by a node and a port where the node defines the device and the port defines the service on the respective node @libcsp-header. Since the SSTV system operates on a single node, only the port is used to group the different messages.
+Commands are encoded as #acr("CSP") messages. #acr("CSP") is a lightweight protocol stack for communication on distributed embedded systems @libcsp-index. Source and destination are defined by a node and a port where the node defines the device and the port defines the service on the respective node @libcsp-header. Since the SSTV system operates on a single node, only the port is used to group the different messages.
 
 #figure(
   table(
