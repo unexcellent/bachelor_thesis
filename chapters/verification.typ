@@ -92,6 +92,8 @@ In total, 25 tests cover the Robot 36 encoding path, all of which pass.
 
 Unit testing in `beacon` reveals another benefit of modular programming. The traits defined in @sec-hardware-abstraction can be used to implement mock hardware. The unit tests in `beacon` define `FakeCamera`, `FakeAudio` and `FakeLink`. Each implements the same public methods that any real device would, but only log which methods are called and emit dummy data if requested as can be seen in @list-fake-camera.
 
+#pagebreak()
+
 #figure(
   ```rust
   struct FakeCamera { log: CallLog }

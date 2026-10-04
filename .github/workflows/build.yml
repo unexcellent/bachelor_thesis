@@ -34,6 +34,25 @@ jobs:
           # Redirect the site root to the PDF so both URLs open it inline.
           printf '<!doctype html><meta http-equiv="refresh" content="0; url=thesis.pdf">' > public/index.html
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: defense/slides/pnpm-lock.yaml
+
+      - name: Build defense slides
+        working-directory: defense/slides
+        env:
+          # Chromium is only needed for local PDF export.
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm exec slidev build --base /bachelor_thesis/slides/ --out ../../public/slides
+
       # Stable, public download link that always points at the newest build.
       - name: Publish to the "latest" release
         uses: softprops/action-gh-release@v2
@@ -42,7 +61,7 @@ jobs:
           name: Latest build
           files: public/thesis.pdf
 
-      # Package the PDF for a GitHub Pages deployment (inline viewing).
+      # Package the PDF and the slides for a GitHub Pages deployment (inline viewing).
       - uses: actions/upload-pages-artifact@v3
         with:
           path: public

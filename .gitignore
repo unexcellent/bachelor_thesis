@@ -9,5 +9,8 @@
 local/
 .claude/
 
+# source deck of the defense slides
+defense/*.pptx
+
 # npm dependencies of the Miro fetch script
 scripts/miro/node_modules/
