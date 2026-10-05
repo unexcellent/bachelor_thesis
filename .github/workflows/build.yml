@@ -55,11 +55,13 @@ jobs:
           python3 scripts/backup.py
           pnpm exec slidev build --base /bachelor_thesis/slides/ --out ../../public/slides
 
+      # Handout PDF: every slide with its speaker notes below (see scripts/handout.typ).
       - name: Export defense slides to PDF
         working-directory: defense/slides
         run: |
           pnpm exec playwright install chromium
-          pnpm export --output ../../public/defense.pdf
+          pnpm export
+          cp defense.pdf ../../public/defense.pdf
 
       # Stable, public download link that always points at the newest build.
       - name: Publish to the "latest" release
