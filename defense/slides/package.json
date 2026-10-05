@@ -6,7 +6,7 @@
     "dev": "slidev --open",
     "build": "slidev build",
     "export": "pnpm export:slides && node scripts/notes.mjs && typst compile --root . scripts/handout.typ defense.pdf",
-    "export:slides": "slidev export --dark --per-slide --wait 1500 --output build/slides.pdf"
+    "export:slides": "mkdir -p build && slidev export --dark --per-slide --wait 1500 --output build/slides.pdf"
   },
   "dependencies": {
     "@slidev/cli": "^53.0.0",
