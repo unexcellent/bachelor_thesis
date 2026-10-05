@@ -47,11 +47,19 @@ jobs:
       - name: Build defense slides
         working-directory: defense/slides
         env:
-          # Chromium is only needed for local PDF export.
+          # The postinstall download is skipped; the export step installs only the browser it needs.
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
         run: |
           pnpm install --frozen-lockfile
+          # Regenerate the backup slides so they always match the thesis figures.
+          python3 scripts/backup.py
           pnpm exec slidev build --base /bachelor_thesis/slides/ --out ../../public/slides
+
+      - name: Export defense slides to PDF
+        working-directory: defense/slides
+        run: |
+          pnpm exec playwright install chromium
+          pnpm export --output ../../public/defense.pdf
 
       # Stable, public download link that always points at the newest build.
       - name: Publish to the "latest" release
@@ -59,7 +67,9 @@ jobs:
         with:
           tag_name: latest
           name: Latest build
-          files: public/thesis.pdf
+          files: |
+            public/thesis.pdf
+            public/defense.pdf
 
       # Package the PDF and the slides for a GitHub Pages deployment (inline viewing).
       - uses: actions/upload-pages-artifact@v3

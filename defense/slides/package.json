@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "slidev --open",
     "build": "slidev build",
-    "export": "slidev export --dark"
+    "export": "slidev export --dark --per-slide --wait 1500"
   },
   "dependencies": {
     "@slidev/cli": "^53.0.0",
