@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 -1 30 74">
+<style>*{fill:#0c1216;stroke:#fdfdfd;stroke-width:1.5;vector-effect:non-scaling-stroke;stroke-linejoin:round;stroke-linecap:round}.slot{fill:none}</style>
+<!-- DSD TECH SH-U11 USB to RS422/RS485 adapter, top view, USB-A plug pointing up -->
+<rect x="8" y="0" width="12" height="13" rx="0.4"/>
+<rect x="10" y="3" width="2.2" height="2.2"/>
+<rect x="15.8" y="3" width="2.2" height="2.2"/>
+<path d="M6,12H22V22C22,27 28,29 28,35V66Q28,71 23,71H5Q0,71 0,66V35C0,29 6,27 6,22Z"/>
+<path d="M8,15H20V23C20,28 25.5,30 25.5,35.5V59.5H2.5V35.5C2.5,30 8,28 8,23Z"/>
+<rect x="9.5" y="29" width="9" height="7.5" rx="0.3"/>
+<rect x="11" y="39.5" width="6" height="4" rx="0.3"/>
+<rect x="4.5" y="40.5" width="2.2" height="1.2"/>
+<rect x="21.3" y="40.5" width="2.2" height="1.2"/>
+<rect x="4.5" y="47" width="3" height="1.6"/>
+<rect x="20.5" y="47" width="3" height="1.6"/>
+<rect x="10" y="17.5" width="8" height="2.5" rx="0.3"/>
+<rect x="2.5" y="61" width="23" height="8.5" rx="0.5"/>
+<circle cx="5" cy="65.2" r="1.6"/><path class="slot" d="M3.9,66.3L6.1,64.1"/>
+<circle cx="9.5" cy="65.2" r="1.6"/><path class="slot" d="M8.4,66.3L10.6,64.1"/>
+<circle cx="14" cy="65.2" r="1.6"/><path class="slot" d="M12.9,66.3L15.1,64.1"/>
+<circle cx="18.5" cy="65.2" r="1.6"/><path class="slot" d="M17.4,66.3L19.6,64.1"/>
+<circle cx="23" cy="65.2" r="1.6"/><path class="slot" d="M21.9,66.3L24.1,64.1"/>
+</svg>

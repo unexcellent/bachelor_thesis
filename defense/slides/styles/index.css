@@ -42,3 +42,118 @@
 .fade-leave-to {
   opacity: 0;
 }
+
+.list-heading {
+  font-size: 24px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 24px;
+}
+
+/* Doubled class beats the theme's `.slidev-layout ul` bullets and indent. */
+.plain-list.plain-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.plain-list.plain-list li {
+  list-style: none;
+  padding: 0;
+  font-size: 32px;
+  line-height: 1.25;
+  margin: 0 0 20px;
+  white-space: nowrap;
+}
+
+.code-panel .slidev-code {
+  --slidev-code-font-size: 21px;
+  --slidev-code-line-height: 1.6;
+  background: transparent !important;
+  padding: 0;
+}
+
+.step-only {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.step-only.shown {
+  opacity: 1;
+}
+
+.coverage.coverage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: auto;
+  border-collapse: collapse;
+  font-size: 30px;
+}
+
+.coverage th,
+.coverage td {
+  padding: 22px 36px;
+  border: none;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.coverage th {
+  font-weight: 400;
+  font-size: 26px;
+  vertical-align: bottom;
+}
+
+.coverage tbody tr {
+  border-top: 1px solid rgba(253, 253, 253, 0.15);
+}
+
+.coverage td:first-child {
+  text-align: left;
+  font-family: Menlo, ui-monospace, monospace;
+  font-size: 24px;
+}
+
+.coverage td.none {
+  color: rgba(253, 253, 253, 0.25);
+}
+
+.verify.verify {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: auto;
+  border-collapse: collapse;
+  font-size: 24px;
+}
+
+.verify th,
+.verify td {
+  padding: 20px 28px;
+  border: none;
+  text-align: left;
+  vertical-align: top;
+  white-space: nowrap;
+}
+
+.verify th {
+  font-weight: 400;
+  font-size: 22px;
+}
+
+.verify tbody tr {
+  border-top: 1px solid rgba(253, 253, 253, 0.15);
+}
+
+.verify td:first-child {
+  font-size: 26px;
+}
+
+.verify td:last-child {
+  font-size: 28px;
+}
