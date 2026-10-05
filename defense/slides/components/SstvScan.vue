@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { onSlideEnter, onSlideLeave } from '@slidev/client'
 import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { renderTone, useSlideAudio } from '../lib/audio'
+import { BLACK_HZ, drawPixels as drawImageData, levelToHz, loadImage, luma, PIXEL_MS, samplePixels, setupCanvas, WHITE_HZ } from '../lib/robot36'
 
 /**
  * Encodes an image pixel by pixel into SSTV tones and decodes it again on the fly.
@@ -16,7 +18,8 @@ import { onBeforeUnmount, onMounted, ref } from 'vue'
  *
  * Each pixel is one tone of Robot 36 pixel length (0.275 ms), mapped linearly
  * from 1500 Hz (black) to 2300 Hz (white) by its luminance (Dayton paper).
- * Sync pulses are left out to keep the slide focused.
+ * Sync pulses are left out to keep the slide focused. The tones play at the
+ * same pace as the animation.
  */
 const props = withDefaults(defineProps<{
   src: string
@@ -34,10 +37,6 @@ const props = withDefaults(defineProps<{
   windowMs: 9,
   noise: 55,
 })
-
-const PIXEL_MS = 0.275
-const BLACK_HZ = 1500
-const WHITE_HZ = 2300
 
 const cols = props.cols
 const rows = Math.round((props.cols * 3) / 4)
@@ -59,6 +58,8 @@ let frame = 0
 let startedAt = 0
 let signalMs = 0
 let active = false
+let scanAudio: AudioBuffer | undefined
+const audio = useSlideAudio()
 
 function gaussian(rand: () => number) {
   return Math.sqrt(-2 * Math.log(1 - rand())) * Math.cos(2 * Math.PI * rand())
@@ -75,19 +76,13 @@ function seeded(seed: number) {
 }
 
 function analyse(img: HTMLImageElement) {
-  const canvas = document.createElement('canvas')
-  canvas.width = cols
-  canvas.height = rows
-  const ctx = canvas.getContext('2d', { willReadFrequently: true })!
-  ctx.drawImage(img, 0, 0, cols, rows)
-  source = ctx.getImageData(0, 0, cols, rows)
+  source = samplePixels(img, cols, rows)
   cellRgb = source.data
 
   cellHz = new Float32Array(cells)
   cellCycles = new Float64Array(cells + 1)
   for (let i = 0; i < cells; i++) {
-    const luma = 0.299 * cellRgb[i * 4] + 0.587 * cellRgb[i * 4 + 1] + 0.114 * cellRgb[i * 4 + 2]
-    cellHz[i] = BLACK_HZ + (luma / 255) * (WHITE_HZ - BLACK_HZ)
+    cellHz[i] = levelToHz(luma(cellRgb[i * 4], cellRgb[i * 4 + 1], cellRgb[i * 4 + 2]))
     cellCycles[i + 1] = cellCycles[i] + (cellHz[i] * PIXEL_MS) / 1000
   }
   decoded = simulateReception(cellRgb)
@@ -124,12 +119,12 @@ function simulateReception(rgb: Uint8ClampedArray) {
       const r = rgb[i]
       const g = rgb[i + 1]
       const b = rgb[i + 2]
-      const luma = 0.299 * r + 0.587 * g + 0.114 * b
+      const l = luma(r, g, b)
       const amp = fade && x >= fadeStart && x < fadeEnd ? 5 : 1
       n = smooth * n + (1 - smooth) * gaussian(rand) * props.noise * amp
-      const yy = Math.min(255, Math.max(0, luma + n * hzToLevel))
-      const u = 0.492 * (b - luma) + uNoise[x] * amp
-      const v = 0.877 * (r - luma) + vNoise[x] * amp
+      const yy = Math.min(255, Math.max(0, l + n * hzToLevel))
+      const u = 0.492 * (b - l) + uNoise[x] * amp
+      const v = 0.877 * (r - l) + vNoise[x] * amp
       const rr = yy + v / 0.877
       const bb = yy + u / 0.492
       out[i] = rr
@@ -139,17 +134,6 @@ function simulateReception(rgb: Uint8ClampedArray) {
     }
   }
   return out
-}
-
-function setupCanvas(canvas: HTMLCanvasElement) {
-  const scale = 2
-  const w = canvas.offsetWidth
-  const h = canvas.offsetHeight
-  canvas.width = w * scale
-  canvas.height = h * scale
-  const ctx = canvas.getContext('2d')!
-  ctx.setTransform(scale, 0, 0, scale, 0, 0)
-  return { ctx, w, h }
 }
 
 function drawMarker(ctx: CanvasRenderingContext2D, w: number, h: number, band: boolean) {
@@ -176,13 +160,7 @@ function drawMarker(ctx: CanvasRenderingContext2D, w: number, h: number, band: b
 function drawPixels(canvas: HTMLCanvasElement | undefined, pixels: ImageData | undefined, band: boolean) {
   if (!canvas || !pixels)
     return
-  const { ctx, w, h } = setupCanvas(canvas)
-  const tiny = document.createElement('canvas')
-  tiny.width = cols
-  tiny.height = rows
-  tiny.getContext('2d')!.putImageData(pixels, 0, 0)
-  ctx.imageSmoothingEnabled = false
-  ctx.drawImage(tiny, 0, 0, w, h)
+  const { ctx, w, h } = drawImageData(canvas, pixels)
   drawMarker(ctx, w, h, band)
 }
 
@@ -258,21 +236,18 @@ function restart() {
   if (cellRgb)
     received = new ImageData(cols, rows)
   render()
-  if (cellHz)
-    frame = requestAnimationFrame(tick)
+  if (!cellHz)
+    return
+  frame = requestAnimationFrame(tick)
+  audio.play(() => scanAudio ??= renderTone(cells * props.cellMs, ms => cellHz![Math.min(cells - 1, Math.floor(ms / props.cellMs))]))
 }
 
-onMounted(() => {
-  const img = new Image()
-  img.onload = () => {
-    analyse(img)
-    if (active)
-      restart()
-    else
-      render()
-  }
-  // Props skip Vite's asset URL rewriting, so prefix the deploy base for public paths.
-  img.src = props.src.startsWith('/') ? import.meta.env.BASE_URL + props.src.slice(1) : props.src
+onMounted(async () => {
+  analyse(await loadImage(props.src))
+  if (active)
+    restart()
+  else
+    render()
 })
 
 onSlideEnter(() => {

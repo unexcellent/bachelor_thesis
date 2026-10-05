@@ -36,7 +36,7 @@ download: false
 - Scans an image line by line - thats why its called slow-scan television
 - Converts the pixel information into tones that can then be decoded
 - Demonstration here shows satellite image on the left, encoded into tones and decoded on the right
-- (start playing the audio for a few seconds)
+- [start playing the audio for a few seconds]
 -->
 
 ---
@@ -87,10 +87,82 @@ clicks: 2
 -->
 
 ---
+clicks: 1
+---
 
-<div class="absolute inset-0 flex items-center justify-center">
-  <div class="placeholder">Theory – how does sstv encoding work</div>
-</div>
+<FrequencyRow src="/img/earthset.jpg" :step="$clicks" />
+
+<!--
+- SSTV works by encoding color information in frequencies
+- the graph below shows the frequency by time graph
+- [click]
+- higher frequency is higher brighness (or luminance)
+-->
+
+---
+clicks: 1
+---
+
+<ColourSplit src="/img/earthset.jpg" :step="$clicks" />
+
+<!--
+- why is it brightness and not any of the RGB channels?
+  - because Robot36 uses a composite color model
+- means that we have one channel for brightness (called luminance)
+- one channel for the blue difference
+  - color shift from blue to yellow
+- one channel for red difference
+  - color shift from red to green
+- [click]
+- why use this color model?
+  - because the human eye can perceive changes in luminance much better than changes in chromiance
+- therefore we can alternate blue and red chromiance every other line
+- barely a noticable change
+- shorter transmissions
+-->
+
+---
+clicks: 1
+---
+
+<RobotTimeline part="vox" :step="$clicks" />
+
+<!--
+- every transmission has a header besides the actual image tones
+- usually starts with the voice activation sequence
+- used to announce the transmission and show the entire frequency range
+- [click]
+-->
+
+---
+clicks: 1
+---
+
+<RobotTimeline part="vis" :step="$clicks" />
+
+<!--
+- vis header is used to identify the mode of the transmission
+- starts with two leader tones
+- then a tone sequence representing a binary number
+- in this case, it identifies the Robot36 mode
+- [click]
+-->
+
+---
+clicks: 1
+---
+
+<RobotTimeline part="line" src="/img/earthset.jpg" :step="$clicks" />
+
+<!--
+- finally, the tones for each scanline
+- starts with a synchronization tone so every receiver knows a new line has started
+- then luminance
+- then a small porch
+- then chromiance
+  - alternates between blue and red
+- [click]
+-->
 
 ---
 
